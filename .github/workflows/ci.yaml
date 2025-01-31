@@ -8,7 +8,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - nam: Install dependencies
+    - name: Install dependencies
       run: npm install -g pnpm && pnpm install
 
     - name: Copy .env.example files
