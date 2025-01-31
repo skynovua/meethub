@@ -78,7 +78,7 @@ export default function SignIn() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p>
-            Don't have an account?{" "}
+            {"Don't have an account? "}
             <Link href="/signup" className="text-blue-500 hover:underline">
               Sign Up
             </Link>
