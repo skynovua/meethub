@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string) => {
     // Mock login
     const user = { id: "1", name: "John Doe", email }
     setUser(user)
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem("user")
   }
 
-  const signup = async (name: string, email: string, password: string) => {
+  const signup = async (name: string, email: string) => {
     // Mock signup
     const user = { id: "1", name, email }
     setUser(user)
