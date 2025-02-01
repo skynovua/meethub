@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "../../contexts/AuthContext"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { meetups, type Meetup } from "../../data/meetups"
-import { ThemeSwitcher } from "../../components/theme-switcher"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { meetups, type Meetup } from "../../data/meetups";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
 export default function Dashboard() {
-  const { user, logout } = useAuth()
-  const router = useRouter()
-  const [userMeetups, setUserMeetups] = useState<Meetup[]>([])
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const [userMeetups, setUserMeetups] = useState<Meetup[]>([]);
 
   useEffect(() => {
     if (!user) {
-      router.push("/signin")
+      router.push("/signin");
     } else {
-      setUserMeetups(meetups.filter((meetup) => meetup.organizerId === user.id))
+      setUserMeetups(meetups.filter((meetup) => meetup.organizerId === user.id));
     }
-  }, [user, router])
+  }, [user, router]);
 
   const handleLogout = () => {
-    logout()
-    router.push("/signin")
-  }
+    logout();
+    router.push("/signin");
+  };
 
   return (
     <div className="container mx-auto p-4 bg-background text-foreground">
@@ -62,6 +62,6 @@ export default function Dashboard() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
