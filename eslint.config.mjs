@@ -17,8 +17,9 @@ const eslintConfig = [
       quotes: ["error", "double"],
       "no-console": ["warn"],
       "no-unused-vars": ["warn"],
-    }
-  })
+      "no-multiple-empty-lines": ["warn", { max: 1 }],
+    },
+  }),
 ];
 
 export default eslintConfig;
