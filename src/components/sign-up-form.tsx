@@ -26,24 +26,26 @@ import {
 import { Input } from "@/components/ui/input";
 
 const signInSchema = z.object({
+  name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
 });
 
-type SignInForm = z.infer<typeof signInSchema>;
+type SignUpForm = z.infer<typeof signInSchema>;
 
-const defaultValues: SignInForm = {
+const defaultValues: SignUpForm = {
+  name: "",
   email: "",
   password: "",
 };
 
-export default function SignInForm() {
-  const form = useForm<SignInForm>({
+export default function SignUpForm() {
+  const form = useForm<SignUpForm>({
     resolver: zodResolver(signInSchema),
     defaultValues,
   });
 
-  const onSubmit = (values: SignInForm) => {
+  const onSubmit = (values: SignUpForm) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -52,13 +54,26 @@ export default function SignInForm() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
-        <CardDescription>Enter your email and password to sign in.</CardDescription>
+        <CardTitle>Sign Up</CardTitle>
+        <CardDescription>Create a new account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid w-full items-center gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -94,9 +109,9 @@ export default function SignInForm() {
       </CardContent>
       <CardFooter className="flex justify-center">
         <p>
-          {"Don't have an account? "}
-          <Link href="/sign-up" className="text-blue-500 hover:underline">
-            Sign Up
+          Already have an account?{" "}
+          <Link href="/sign-in" className="text-blue-500 hover:underline">
+            Sign In
           </Link>
         </p>
       </CardFooter>
