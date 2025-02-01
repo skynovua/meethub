@@ -18,6 +18,7 @@ const eslintConfig = [
       "no-console": ["warn"],
       "no-unused-vars": ["warn"],
       "no-multiple-empty-lines": ["warn", { max: 1 }],
+      "@typescript-eslint/no-unused-vars": ["warn"],
     },
   }),
 ];

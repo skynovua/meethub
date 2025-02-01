@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { z } from "zod";
 
@@ -44,9 +45,11 @@ export default function SignInForm() {
   });
 
   const onSubmit = (values: SignInForm) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      callbackUrl: "/",
+    });
   };
 
   return (

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { z } from "zod";
 
+import { createUser } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 const signInSchema = z.object({
-  name: z.string().min(2),
+  username: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
 });
@@ -34,7 +35,7 @@ const signInSchema = z.object({
 type SignUpForm = z.infer<typeof signInSchema>;
 
 const defaultValues: SignUpForm = {
-  name: "",
+  username: "",
   email: "",
   password: "",
 };
@@ -45,10 +46,8 @@ export default function SignUpForm() {
     defaultValues,
   });
 
-  const onSubmit = (values: SignUpForm) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const onSubmit = async (values: SignUpForm) => {
+    await createUser(values);
   };
 
   return (
@@ -63,7 +62,7 @@ export default function SignUpForm() {
             <div className="grid w-full items-center gap-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>

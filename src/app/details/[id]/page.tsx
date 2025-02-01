@@ -1,12 +1,22 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../../../contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { meetups, type Meetup } from "../../../data/meetups";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { useAuth } from "../../../contexts/AuthContext";
+import { type Meetup, meetups } from "../../../data/meetups";
 
 export default function Details({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -17,8 +27,6 @@ export default function Details({ params }: { params: Promise<{ id: string }> })
 
   useEffect(() => {
     if (!user) {
-      router.push("/signin");
-    } else {
       const foundMeetup = meetups.find((m) => m.id === id);
       if (foundMeetup) {
         setMeetup(foundMeetup);
@@ -52,7 +60,12 @@ export default function Details({ params }: { params: Promise<{ id: string }> })
         <CardContent>
           {meetup.bannerImage && (
             <div className="mb-4">
-              <Image src={meetup.bannerImage || "/placeholder.svg"} alt={meetup.title} width={400} height={200} />
+              <Image
+                src={meetup.bannerImage || "/placeholder.svg"}
+                alt={meetup.title}
+                width={400}
+                height={200}
+              />
             </div>
           )}
           <p>{meetup.description}</p>
@@ -69,4 +82,3 @@ export default function Details({ params }: { params: Promise<{ id: string }> })
     </div>
   );
 }
-
