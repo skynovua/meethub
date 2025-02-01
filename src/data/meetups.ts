@@ -27,5 +27,5 @@ export const meetups: Meetup[] = [
     organizerId: "1",
     bannerImage: "/placeholder.svg?height=200&width=400",
   },
-]
+];
 

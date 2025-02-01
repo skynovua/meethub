@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/AuthContext"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { meetups, type Meetup } from "@/data/meetups"
-import { z } from "zod"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { meetups, type Meetup } from "@/data/meetups";
+import { z } from "zod";
 
 const meetupSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -17,11 +17,11 @@ const meetupSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   location: z.string().min(1, "Location is required"),
   bannerImage: z.string().optional(),
-})
+});
 
 export default function CreateEditMeetup({ params }: { params: { action: string; id?: string } }) {
-  const { user } = useAuth()
-  const router = useRouter()
+  const { user } = useAuth();
+  const router = useRouter();
   const [meetup, setMeetup] = useState<Meetup>({
     id: "",
     title: "",
@@ -30,44 +30,44 @@ export default function CreateEditMeetup({ params }: { params: { action: string;
     location: "",
     organizerId: "",
     bannerImage: "",
-  })
-  const [error, setError] = useState("")
+  });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!user) {
-      router.push("/signin")
+      router.push("/signin");
     } else if (params.action === "edit" && params.id) {
-      const foundMeetup = meetups.find((m) => m.id === params.id)
+      const foundMeetup = meetups.find((m) => m.id === params.id);
       if (foundMeetup) {
-        setMeetup(foundMeetup)
+        setMeetup(foundMeetup);
       } else {
-        router.push("/dashboard")
+        router.push("/dashboard");
       }
     }
-  }, [user, router, params.action, params.id])
+  }, [user, router, params.action, params.id]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     try {
-      meetupSchema.parse(meetup)
+      meetupSchema.parse(meetup);
       // In a real app, you'd make an API call here
-      alert(params.action === "create" ? "Meetup created" : "Meetup updated")
-      router.push("/dashboard")
+      alert(params.action === "create" ? "Meetup created" : "Meetup updated");
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.errors[0].message)
+        setError(err.errors[0].message);
       } else {
-        setError("An error occurred. Please try again.")
+        setError("An error occurred. Please try again.");
       }
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setMeetup((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setMeetup((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="container mx-auto p-4 bg-background text-foreground">
@@ -107,6 +107,6 @@ export default function CreateEditMeetup({ params }: { params: { action: string;
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 

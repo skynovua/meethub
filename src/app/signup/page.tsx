@@ -1,45 +1,45 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "../../contexts/AuthContext"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import Link from "next/link"
-import { z } from "zod"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import Link from "next/link";
+import { z } from "zod";
 
 const signUpSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
-})
+});
 
 export default function SignUp() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const { signup } = useAuth()
-  const router = useRouter()
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { signup } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     try {
-      signUpSchema.parse({ name, email, password })
-      await signup(name, email, password)
-      router.push("/dashboard")
+      signUpSchema.parse({ name, email, password });
+      await signup(name, email, password);
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.errors[0].message)
+        setError(err.errors[0].message);
       } else {
-        setError("An error occurred. Please try again.")
+        setError("An error occurred. Please try again.");
       }
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -92,6 +92,6 @@ export default function SignUp() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
 
