@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { createUser } from "@/actions/user";
@@ -41,13 +42,19 @@ const defaultValues: SignUpForm = {
 };
 
 export default function SignUpForm() {
+  const router = useRouter();
+
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signInSchema),
     defaultValues,
   });
 
   const onSubmit = async (values: SignUpForm) => {
-    await createUser(values);
+    const user = await createUser(values);
+
+    if (user) {
+      router.push("/sign-in");
+    }
   };
 
   return (
@@ -67,7 +74,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your name" {...field} />
+                      <Input placeholder="Enter your name" autoComplete="name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -80,7 +87,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your email" {...field} />
+                      <Input placeholder="Enter your email" autoComplete="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -101,7 +108,7 @@ export default function SignUpForm() {
               />
             </div>
             <Button className="mt-4 w-full" type="submit">
-              Sign In
+              Sign Up
             </Button>
           </form>
         </Form>

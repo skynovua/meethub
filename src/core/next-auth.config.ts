@@ -26,7 +26,11 @@ export const authOptions: NextAuthOptions = {
         return null;
       }
 
-      return user;
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.username,
+      };
     },
   })],
   pages: {

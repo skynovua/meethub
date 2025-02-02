@@ -33,7 +33,7 @@ export default async function Dashboard() {
             <CardHeader>
               <CardTitle>{meetup.title}</CardTitle>
               <CardDescription>
-                {meetup.date} - {meetup.location}
+                {meetup.date} - {meetup.address}
               </CardDescription>
             </CardHeader>
             <CardContent>

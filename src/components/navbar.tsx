@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
 export default function Navbar() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
@@ -21,9 +21,9 @@ export default function Navbar() {
           {status === "authenticated" && (
             <>
               <Button variant="outline" asChild>
-                <Link href="/profile">Profile</Link>
+                <Link href="/profile">{session.user?.name}</Link>
               </Button>
-              <Button variant="outline" onClick={() => signOut()}>
+              <Button variant="outline" onClick={() => signOut({ callbackUrl: "/sign-in" })}>
                 Logout
               </Button>
             </>

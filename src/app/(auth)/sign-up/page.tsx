@@ -10,7 +10,6 @@ export default async function SignUp() {
   if (user) {
     redirect("/");
   }
-
   return (
     <div className="bg-background flex min-h-[calc(100vh-68px)] items-center justify-center">
       <SignUpForm />
