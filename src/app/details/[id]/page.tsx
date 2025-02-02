@@ -15,26 +15,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { useAuth } from "../../../contexts/AuthContext";
 import { type Meetup, meetups } from "../../../data/meetups";
 
 export default function Details({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
 
-  const { user } = useAuth();
   const router = useRouter();
   const [meetup, setMeetup] = useState<Meetup | null>(null);
 
   useEffect(() => {
-    if (!user) {
-      const foundMeetup = meetups.find((m) => m.id === id);
-      if (foundMeetup) {
-        setMeetup(foundMeetup);
-      } else {
-        router.push("/dashboard");
-      }
+    const foundMeetup = meetups.find((m) => m.id === id);
+    if (foundMeetup) {
+      setMeetup(foundMeetup);
+    } else {
+      router.push("/dashboard");
     }
-  }, [user, router, id]);
+  }, [router, id]);
 
   const handleEdit = () => {
     router.push(`/edit/${meetup?.id}`);

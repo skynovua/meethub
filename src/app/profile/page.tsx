@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../contexts/AuthContext";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { z } from "zod";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -15,20 +18,10 @@ const profileSchema = z.object({
 });
 
 export default function Profile() {
-  const { user, logout } = useAuth();
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (!user) {
-      router.push("/signin");
-    } else {
-      setName(user.name);
-      setEmail(user.email);
-    }
-  }, [user, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,12 +41,17 @@ export default function Profile() {
   };
 
   const handleLogout = () => {
-    logout();
     router.push("/signin");
   };
 
   return (
-    <div className="container mx-auto p-4 bg-background text-foreground">
+    <div className="bg-background text-foreground container mx-auto space-y-2 p-4">
+      <Button asChild variant={"ghost"}>
+        <Link href="/">
+          <ArrowLeft size={24} />
+          Back to Dashboard
+        </Link>
+      </Button>
       <Card>
         <CardHeader>
           <CardTitle>Profile</CardTitle>
@@ -67,15 +65,20 @@ export default function Profile() {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </div>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
-            <Button className="w-full mt-4" type="submit">
+            {error && <p className="mt-2 text-red-500">{error}</p>}
+            <Button className="mt-4 w-full" type="submit">
               Update Profile
             </Button>
           </form>
-          <Button className="w-full mt-4" variant="outline" onClick={handleLogout}>
+          <Button className="mt-4 w-full" variant="outline" onClick={handleLogout}>
             Logout
           </Button>
         </CardContent>
@@ -83,4 +86,3 @@ export default function Profile() {
     </div>
   );
 }
-

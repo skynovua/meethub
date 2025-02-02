@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../../contexts/AuthContext";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { meetups, type Meetup } from "../../../data/meetups";
-import { z } from "zod";
+
+import { type Meetup, meetups } from "../../../data/meetups";
 
 const meetupSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -20,7 +22,6 @@ const meetupSchema = z.object({
 });
 
 export default function EditMeetup({ params }: { params: { id: string } }) {
-  const { user } = useAuth();
   const router = useRouter();
   const [meetup, setMeetup] = useState<Meetup>({
     id: "",
@@ -35,17 +36,13 @@ export default function EditMeetup({ params }: { params: { id: string } }) {
   const isNewMeetup = params.id === "new";
 
   useEffect(() => {
-    if (!user) {
-      router.push("/signin");
-    } else if (!isNewMeetup) {
-      const foundMeetup = meetups.find((m) => m.id === params.id);
-      if (foundMeetup) {
-        setMeetup(foundMeetup);
-      } else {
-        router.push("/dashboard");
-      }
+    const foundMeetup = meetups.find((m) => m.id === params.id);
+    if (foundMeetup) {
+      setMeetup(foundMeetup);
+    } else {
+      router.push("/dashboard");
     }
-  }, [user, router, params.id, isNewMeetup]);
+  }, [router, params.id, isNewMeetup]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,19 +82,40 @@ export default function EditMeetup({ params }: { params: { id: string } }) {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" value={meetup.description} onChange={handleInputChange} />
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={meetup.description}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="date">Date</Label>
-                <Input id="date" name="date" type="date" value={meetup.date} onChange={handleInputChange} />
+                <Input
+                  id="date"
+                  name="date"
+                  type="date"
+                  value={meetup.date}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" name="location" value={meetup.location} onChange={handleInputChange} />
+                <Input
+                  id="location"
+                  name="location"
+                  value={meetup.location}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="bannerImage">Banner Image URL</Label>
-                <Input id="bannerImage" name="bannerImage" value={meetup.bannerImage} onChange={handleInputChange} />
+                <Input
+                  id="bannerImage"
+                  name="bannerImage"
+                  value={meetup.bannerImage}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
             {error && <p className="text-red-500 mt-2">{error}</p>}
@@ -110,4 +128,3 @@ export default function EditMeetup({ params }: { params: { id: string } }) {
     </div>
   );
 }
-

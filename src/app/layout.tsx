@@ -2,8 +2,9 @@ import type React from "react";
 
 import { Inter } from "next/font/google";
 
-import { AuthProvider } from "@/providers/auth-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
+import Navbar from "@/components/navbar";
+import AuthProvider from "@/providers/auth-provider";
+import ThemeProvider from "@/providers/theme-provider";
 
 import "./globals.css";
 
@@ -20,7 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="min-h-screen bg-background text-foreground">{children}</div>
+            <div className="bg-background text-foreground min-h-screen">
+              <Navbar />
+              {children}
+            </div>
           </ThemeProvider>
         </AuthProvider>
       </body>

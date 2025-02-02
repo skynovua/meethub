@@ -1,4 +1,6 @@
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,29 +11,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { authOptions } from "@/core/next-auth.config";
 
-import { meetups } from "../../data/meetups";
+import { meetups } from "../data/meetups";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    redirect("/sign-in");
+  }
+
   return (
-    <div className="container mx-auto p-4 bg-background text-foreground">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" asChild>
-            <Link href="/profile">Profile</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            Logout
-          </Button>
-          <ThemeSwitcher />
-        </div>
-      </div>
+    <div className="bg-background text-foreground container mx-auto p-4">
       <Button className="mb-4">
         <Link href={"/edit/new"}> Create Meetup</Link>
       </Button>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {meetups.map((meetup) => (
           <Card key={meetup.id}>
             <CardHeader>
