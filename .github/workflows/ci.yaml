@@ -5,18 +5,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: npm install -g pnpm && pnpm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Copy .env.example files
-      shell: bash
-      run: find . -type f -name ".env.example" -exec sh -c 'cp "$1" "${1%.example}"' _ {} \;
+      - name: Copy .env.example files
+        shell: bash
+        run: find . -type f -name ".env.example" -exec sh -c 'cp "$1" "${1%.example}"' _ {} \;
 
-    - name: Typecheck
-      run: pnpm typecheck
+      - name: Typecheck
+        run: npm run typecheck
 
-    - name: Lint
-      run: pnpm lint
+      - name: Lint
+        run: npm run lint

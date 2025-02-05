@@ -1,23 +1,50 @@
-"use client";
+import Link from "next/link";
 
-import { useEffect } from "react";
+import Navbar from "@/components/navbar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { auth } from "@/core/auth";
 
-import { useRouter } from "next/navigation";
+import { meetups } from "../data/meetups";
 
-import { useAuth } from "../contexts/AuthContext";
+export default async function Dashboard() {
+  const session = await auth();
 
-export default function Home() {
-  const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      router.push("/dashboard");
-    } else {
-      router.push("/signin");
-    }
-  }, [user, router]);
-
-  // Return null or a loading indicator while redirecting
-  return null;
+  return (
+    <>
+      <div className="bg-background text-foreground container mx-auto p-4">
+        <Button className="mb-4">
+          <Link href={"/edit/new"}> Create Meetup</Link>
+        </Button>
+        <Link href="/settings">asd</Link>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {meetups.map((meetup) => (
+            <Card key={meetup.id}>
+              <CardHeader>
+                <CardTitle>{meetup.title}</CardTitle>
+                <CardDescription>
+                  {meetup.date} - {meetup.address}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>{meetup.description}</p>
+              </CardContent>
+              <CardFooter>
+                <Button asChild>
+                  <Link href={`/details/${meetup.id}`}>View Details</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </>
+  );
 }

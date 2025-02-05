@@ -1,8 +1,14 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
-import { AuthProvider } from "../contexts/AuthContext";
 import type React from "react";
+
+import { SessionProvider } from "next-auth/react";
+import { Inter } from "next/font/google";
+
+import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/core/auth";
+import ThemeProvider from "@/providers/theme-provider";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,22 +17,22 @@ export const metadata = {
   description: "Organize and manage your meetups",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+
   return (
     <html lang="en" suppressHydrationWarning>
-
       <body className={inter.className}>
-        <AuthProvider>
+        <SessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="min-h-screen bg-background text-foreground">{children}</div>
+            <div className="bg-background text-foreground min-h-screen">
+              <Navbar session={session} />
+              {children}
+            </div>
+            <Toaster />
           </ThemeProvider>
-        </AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );
 }
-

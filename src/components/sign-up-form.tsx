@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-import { login } from "@/actions/user";
+import { register } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,29 +27,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SigninPayload, SigninSchema } from "@/lib/schemas";
+import { SignUpSchema, SignupPayload } from "@/lib/schemas";
 
-const defaultValues: SigninPayload = {
+const defaultValues: SignupPayload = {
+  username: "",
   email: "",
   password: "",
 };
 
-export default function SignInForm() {
+export default function SignUpForm() {
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<SigninPayload>({
-    resolver: zodResolver(SigninSchema),
+  const form = useForm<SignupPayload>({
+    resolver: zodResolver(SignUpSchema),
     defaultValues,
   });
 
-  const onSubmit = async (values: SigninPayload) => {
+  const onSubmit = (values: SignupPayload) => {
     startTransition(() =>
-      login(values).then((data) => {
-        if (data?.error) {
+      register(values).then((data) => {
+        if (data.error) {
           form.setError("email", {
             type: "manual",
             message: data.error,
           });
+        }
+
+        if (data.success) {
+          toast(data.success, { description: "You can now sign in with your new account." });
+          form.reset();
         }
       }),
     );
@@ -58,8 +64,8 @@ export default function SignInForm() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
-        <CardDescription>Enter your email and password to sign in.</CardDescription>
+        <CardTitle>Sign Up</CardTitle>
+        <CardDescription>Create a new account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -67,12 +73,30 @@ export default function SignInForm() {
             <div className="grid w-full items-center gap-4">
               <FormField
                 control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your email" autoComplete="email" {...field} />
+                      <Input
+                        placeholder="Enter your email"
+                        type="email"
+                        autoComplete="username"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -99,16 +123,16 @@ export default function SignInForm() {
             </div>
             <Button className="mt-4 w-full" type="submit" disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign In
+              Sign Up
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p>
-          {"Don't have an account? "}
-          <Link href="/sign-up" className="text-blue-500 hover:underline">
-            Sign Up
+          Already have an account?{" "}
+          <Link href="/sign-in" className="text-blue-500 hover:underline">
+            Sign In
           </Link>
         </p>
       </CardFooter>

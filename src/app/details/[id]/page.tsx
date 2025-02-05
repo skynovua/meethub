@@ -1,32 +1,36 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../../../contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { meetups, type Meetup } from "../../../data/meetups";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { type Meetup, meetups } from "../../../data/meetups";
 
 export default function Details({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
 
-  const { user } = useAuth();
   const router = useRouter();
   const [meetup, setMeetup] = useState<Meetup | null>(null);
 
   useEffect(() => {
-    if (!user) {
-      router.push("/signin");
+    const foundMeetup = meetups.find((m) => m.id === id);
+    if (foundMeetup) {
+      setMeetup(foundMeetup);
     } else {
-      const foundMeetup = meetups.find((m) => m.id === id);
-      if (foundMeetup) {
-        setMeetup(foundMeetup);
-      } else {
-        router.push("/dashboard");
-      }
+      router.push("/dashboard");
     }
-  }, [user, router, id]);
+  }, [router, id]);
 
   const handleEdit = () => {
     router.push(`/edit/${meetup?.id}`);
@@ -41,18 +45,23 @@ export default function Details({ params }: { params: Promise<{ id: string }> })
   if (!meetup) return null;
 
   return (
-    <div className="container mx-auto p-4 bg-background text-foreground">
+    <div className="bg-background text-foreground container mx-auto p-4">
       <Card>
         <CardHeader>
           <CardTitle>{meetup.title}</CardTitle>
           <CardDescription>
-            {meetup.date} - {meetup.location}
+            {meetup.date} - {meetup.address}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {meetup.bannerImage && (
+          {meetup.banner && (
             <div className="mb-4">
-              <Image src={meetup.bannerImage || "/placeholder.svg"} alt={meetup.title} width={400} height={200} />
+              <Image
+                src={meetup.banner || "/placeholder.svg"}
+                alt={meetup.title}
+                width={400}
+                height={200}
+              />
             </div>
           )}
           <p>{meetup.description}</p>
@@ -69,4 +78,3 @@ export default function Details({ params }: { params: Promise<{ id: string }> })
     </div>
   );
 }
-

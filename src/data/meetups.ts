@@ -3,9 +3,9 @@ export type Meetup = {
   title: string
   description: string
   date: string
-  location: string
+  address: string
   organizerId: string
-  bannerImage?: string
+  banner: string
 }
 
 export const meetups: Meetup[] = [
@@ -14,18 +14,18 @@ export const meetups: Meetup[] = [
     title: "React Meetup",
     description: "A meetup for React developers",
     date: "2023-07-15",
-    location: "New York, NY",
+    address: "New York, NY",
     organizerId: "1",
-    bannerImage: "/placeholder.svg?height=200&width=400",
+    banner: "",
   },
   {
     id: "2",
     title: "Node.js Meetup",
     description: "A meetup for Node.js developers",
     date: "2023-07-20",
-    location: "San Francisco, CA",
+    address: "San Francisco, CA",
     organizerId: "1",
-    bannerImage: "/placeholder.svg?height=200&width=400",
+    banner: "",
   },
 ];
 
