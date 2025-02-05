@@ -24,7 +24,7 @@ export default function Navbar({ session }: NavbarProps) {
           {session?.user && (
             <>
               <Button variant="outline" asChild>
-                <Link href="/profile">{session.user.name}</Link>
+                <Link href="/">{session.user.name}</Link>
               </Button>
               <Button variant="outline" onClick={() => signOut()}>
                 Logout
