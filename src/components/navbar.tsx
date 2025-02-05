@@ -23,7 +23,7 @@ export default function Navbar() {
               <Button variant="outline" asChild>
                 <Link href="/profile">{session.user?.name}</Link>
               </Button>
-              <Button variant="outline" onClick={() => signOut({ callbackUrl: "/sign-in" })}>
+              <Button variant="outline" onClick={() => signOut()}>
                 Logout
               </Button>
             </>

@@ -1,13 +1,14 @@
 "use client";
 
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
+import { toast } from "sonner";
 
-import { createUser } from "@/actions/user";
+import { register } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,35 +27,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SignUpSchema, SignupPayload } from "@/lib/schemas";
 
-const signInSchema = z.object({
-  username: z.string().min(2),
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-type SignUpForm = z.infer<typeof signInSchema>;
-
-const defaultValues: SignUpForm = {
+const defaultValues: SignupPayload = {
   username: "",
   email: "",
   password: "",
 };
 
 export default function SignUpForm() {
-  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  const form = useForm<SignUpForm>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<SignupPayload>({
+    resolver: zodResolver(SignUpSchema),
     defaultValues,
   });
 
-  const onSubmit = async (values: SignUpForm) => {
-    const user = await createUser(values);
+  const onSubmit = (values: SignupPayload) => {
+    startTransition(() =>
+      register(values).then((data) => {
+        if (data.error) {
+          form.setError("email", {
+            type: "manual",
+            message: data.error,
+          });
+        }
 
-    if (user) {
-      router.push("/sign-in");
-    }
+        if (data.success) {
+          toast(data.success, { description: "You can now sign in with your new account." });
+          form.reset();
+        }
+      }),
+    );
   };
 
   return (
@@ -107,7 +111,8 @@ export default function SignUpForm() {
                 )}
               />
             </div>
-            <Button className="mt-4 w-full" type="submit">
+            <Button className="mt-4 w-full" type="submit" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign Up
             </Button>
           </form>

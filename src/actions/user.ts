@@ -1,30 +1,79 @@
 "use server";
 
-import { prisma } from "@/core/prisma";
-import { hashPassword } from "@/utils/password";
+import { signIn } from "@/core/auth";
+import { db } from "@/core/prisma";
+import { DEFAULT_LOGIN_REDIRECT } from "@/core/routes";
+import { SigninPayload, SigninSchema, SignupPayload, SignUpSchema } from "@/lib/schemas";
+import { AuthError } from "next-auth";
+import bcrypt from "bcryptjs";
 
-interface CreateUserOptions {
-  username: string;
-  email: string;
-  password: string;
-}
+export const register = async (values: SignupPayload) => {
+  const validateFields = SignUpSchema.safeParse(values);
 
-export const createUser = async (options: CreateUserOptions) => {
-  const passwordHash = await hashPassword(options.password);
+  if (!validateFields.success) {
+    return { error: "Invalid fields." };
+  }
 
-  const { password, ...user } = await prisma.user.create({
-    data: {
-      username: options.username,
-      email: options.email,
-      password: passwordHash,
+  const { email, password, username } = validateFields.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const existingUser = await db.user.findUnique({
+    where: {
+      email,
     },
   });
 
-  return user;
+  if (existingUser) {
+    return { error: "User already exists." };
+  }
+
+  await db.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      username,
+    },
+  });
+
+  return {
+    success: "Account created.",
+  };
+
+};
+
+export const login = async (values: SigninPayload) => {
+  const validateFields = SigninSchema.safeParse(values);
+
+  if (!validateFields.success) {
+    return { error: "Invalid email or password." };
+  }
+
+  const { email, password } = validateFields.data;
+
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin": {
+          return { error: "Invalid email or password." };
+        }
+        default: {
+          return { error: "Something went wrong." };
+        }
+      }
+    }
+
+    throw error;
+  }
 };
 
 export const getUserByEmail = async (email: string) => {
-  return prisma.user.findUnique({
+  return db.user.findUnique({
     where: {
       email,
     },

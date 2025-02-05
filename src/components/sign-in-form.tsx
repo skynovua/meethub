@@ -1,12 +1,14 @@
 "use client";
 
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { z } from "zod";
+import { toast } from "sonner";
 
+import { login } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,31 +27,32 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SigninPayload, SigninSchema } from "@/lib/schemas";
 
-const signInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-type SignInForm = z.infer<typeof signInSchema>;
-
-const defaultValues: SignInForm = {
+const defaultValues: SigninPayload = {
   email: "",
   password: "",
 };
 
 export default function SignInForm() {
-  const form = useForm<SignInForm>({
-    resolver: zodResolver(signInSchema),
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<SigninPayload>({
+    resolver: zodResolver(SigninSchema),
     defaultValues,
   });
 
-  const onSubmit = (values: SignInForm) => {
-    signIn("credentials", {
-      email: values.email,
-      password: values.password,
-      callbackUrl: "/",
-    });
+  const onSubmit = async (values: SigninPayload) => {
+    startTransition(() =>
+      login(values).then((data) => {
+        if (data?.error) {
+          form.setError("email", {
+            type: "manual",
+            message: data.error,
+          });
+        }
+      }),
+    );
   };
 
   return (
@@ -94,7 +97,8 @@ export default function SignInForm() {
                 )}
               />
             </div>
-            <Button className="mt-4 w-full" type="submit">
+            <Button className="mt-4 w-full" type="submit" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In
             </Button>
           </form>

@@ -1,9 +1,8 @@
 "use server";
 
 import { getUserByEmail } from "@/actions/user";
-import { authOptions } from "@/core/next-auth.config";
-import { prisma } from "@/core/prisma";
-import { getServerSession } from "next-auth";
+import { auth } from "@/core/auth";
+import { db } from "@/core/prisma";
 
 interface CreateEvent {
   title: string;
@@ -14,7 +13,7 @@ interface CreateEvent {
 }
 
 export const createEvent = async (options: CreateEvent) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || !session.user) {
     throw new Error("Unauthorized");
@@ -26,7 +25,7 @@ export const createEvent = async (options: CreateEvent) => {
     throw new Error("User not found");
   }
 
-  const event = await prisma.event?.create({
+  const event = await db.event?.create({
     data: {
       title: options.title,
       description: options.description,

@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
+import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,42 +10,41 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authOptions } from "@/core/next-auth.config";
+import { auth } from "@/core/auth";
 
 import { meetups } from "../data/meetups";
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
-
-  if (!session || !session.user) {
-    redirect("/sign-in");
-  }
+  const session = await auth();
 
   return (
-    <div className="bg-background text-foreground container mx-auto p-4">
-      <Button className="mb-4">
-        <Link href={"/edit/new"}> Create Meetup</Link>
-      </Button>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {meetups.map((meetup) => (
-          <Card key={meetup.id}>
-            <CardHeader>
-              <CardTitle>{meetup.title}</CardTitle>
-              <CardDescription>
-                {meetup.date} - {meetup.address}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>{meetup.description}</p>
-            </CardContent>
-            <CardFooter>
-              <Button asChild>
-                <Link href={`/details/${meetup.id}`}>View Details</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+    <>
+      <div className="bg-background text-foreground container mx-auto p-4">
+        <Button className="mb-4">
+          <Link href={"/edit/new"}> Create Meetup</Link>
+        </Button>
+        <Link href="/settings">asd</Link>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {meetups.map((meetup) => (
+            <Card key={meetup.id}>
+              <CardHeader>
+                <CardTitle>{meetup.title}</CardTitle>
+                <CardDescription>
+                  {meetup.date} - {meetup.address}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>{meetup.description}</p>
+              </CardContent>
+              <CardFooter>
+                <Button asChild>
+                  <Link href={`/details/${meetup.id}`}>View Details</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
