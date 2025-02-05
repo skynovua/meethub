@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <SessionProvider session={session}>
+        <SessionProvider session={session} basePath="/api/auth">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="bg-background text-foreground min-h-screen">
               <Navbar session={session} />
