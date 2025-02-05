@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="bg-background text-foreground min-h-screen">
-              <Navbar />
+              <Navbar session={session} />
               {children}
             </div>
             <Toaster />

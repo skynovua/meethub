@@ -1,15 +1,18 @@
 "use client";
 
 import { Presentation } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
-export default function Navbar() {
-  const { data: session, status } = useSession();
+interface NavbarProps {
+  session: Session | null;
+}
 
+export default function Navbar({ session }: NavbarProps) {
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
       <div className="flex items-center justify-between">
@@ -18,10 +21,10 @@ export default function Navbar() {
           <span className="font-bold">MeetHub</span>
         </Link>
         <div className="flex items-center space-x-2">
-          {status === "authenticated" && (
+          {session?.user && (
             <>
               <Button variant="outline" asChild>
-                <Link href="/profile">{session.user?.name}</Link>
+                <Link href="/profile">{session.user.name}</Link>
               </Button>
               <Button variant="outline" onClick={() => signOut()}>
                 Logout

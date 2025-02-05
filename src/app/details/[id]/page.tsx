@@ -5,7 +5,6 @@ import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -47,7 +46,6 @@ export default function Details({ params }: { params: Promise<{ id: string }> })
 
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
-      <Navbar />
       <Card>
         <CardHeader>
           <CardTitle>{meetup.title}</CardTitle>

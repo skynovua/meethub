@@ -78,7 +78,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your name" autoComplete="name" {...field} />
+                      <Input placeholder="Enter your name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,7 +91,12 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your email" autoComplete="email" {...field} />
+                      <Input
+                        placeholder="Enter your email"
+                        type="email"
+                        autoComplete="username"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -104,7 +109,12 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Enter your password" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
