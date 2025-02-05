@@ -23,7 +23,6 @@ export default async function Dashboard() {
         <Button className="mb-4">
           <Link href={"/edit/new"}> Create Meetup</Link>
         </Button>
-        <Link href="/settings">asd</Link>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {meetups.map((meetup) => (
             <Card key={meetup.id}>
