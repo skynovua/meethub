@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { getEvents } from "@/actions/event";
+import DateTime from "@/components/date-time";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,30 +11,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { meetups } from "@/data/meetups";
 
 export default async function Dashboard() {
+  const events = await getEvents();
+
   return (
     <>
       <div className="bg-background text-foreground container mx-auto p-4">
-        <Button className="mb-4">
+        <Button className="mb-4" asChild>
           <Link href={"/edit/new"}> Create Meetup</Link>
         </Button>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {meetups.map((meetup) => (
-            <Card key={meetup.id}>
+          {events.map((event) => (
+            <Card key={event.id}>
               <CardHeader>
-                <CardTitle>{meetup.title}</CardTitle>
+                <CardTitle>{event.title}</CardTitle>
                 <CardDescription>
-                  {meetup.date} - {meetup.address}
+                  <DateTime date={event.date} /> - {event.address}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p>{meetup.description}</p>
+                <p>{event.description}</p>
               </CardContent>
               <CardFooter>
                 <Button asChild>
-                  <Link href={`/details/${meetup.id}`}>View Details</Link>
+                  <Link href={`/details/${event.id}`}>View Details</Link>
                 </Button>
               </CardFooter>
             </Card>
