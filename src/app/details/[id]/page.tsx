@@ -1,10 +1,9 @@
-"use client";
-
-import { use, useEffect, useState } from "react";
-
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
+import { getEventById } from "@/actions/event";
+import DateTime from "@/components/date-time";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,63 +13,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { type Meetup, meetups } from "@/data/meetups";
 
-export default function Details({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default async function Details({ params }: { params: Promise<{ id: string }> }) {
+  const id = (await params).id;
 
-  const router = useRouter();
-  const [meetup, setMeetup] = useState<Meetup | null>(null);
+  const event = await getEventById(id);
 
-  useEffect(() => {
-    const foundMeetup = meetups.find((m) => m.id === id);
-    if (foundMeetup) {
-      setMeetup(foundMeetup);
-    } else {
-      router.push("/dashboard");
-    }
-  }, [router, id]);
-
-  const handleEdit = () => {
-    router.push(`/edit/${meetup?.id}`);
-  };
-
-  const handleCancel = () => {
-    // In a real app, you'd want to make an API call here
-    alert("Meetup cancelled");
-    router.push("/dashboard");
-  };
-
-  if (!meetup) return null;
+  if (!event) {
+    redirect("/");
+  }
 
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle>{meetup.title}</CardTitle>
+          <CardTitle>{event.title}</CardTitle>
           <CardDescription>
-            {meetup.date} - {meetup.address}
+            <DateTime date={event.date} /> - {event.address}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {meetup.banner && (
-            <div className="mb-4">
+          {event.banner && (
+            <div className="relative mb-4 h-80 w-full">
               <Image
-                src={meetup.banner || "/placeholder.svg"}
-                alt={meetup.title}
-                width={400}
-                height={200}
+                src={event.banner || "/placeholder.svg"}
+                alt={event.title}
+                fill
+                className="object-cover"
               />
             </div>
           )}
-          <p>{meetup.description}</p>
+          <p>{event.description}</p>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleEdit} className="mr-2">
-            Edit
+          <Button className="mr-2" asChild>
+            <Link href={`/edit/${event.id}`}>Edit</Link>
           </Button>
-          <Button variant="destructive" onClick={handleCancel}>
-            Cancel Meetup
+          <Button variant="destructive" asChild>
+            <Link href={"/"}>Cancel Event</Link>
           </Button>
         </CardFooter>
       </Card>

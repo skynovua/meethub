@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 
-import { createEvent } from "@/actions/event";
+import { createEvent, updateEvent } from "@/actions/event";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getImageData, toBase64 } from "@/utils/file";
+import { toBase64 } from "@/utils/file";
 
 const meetupSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -34,7 +34,7 @@ const meetupSchema = z.object({
     },
   ),
   address: z.string().min(1, "Location is required"),
-  banner: z.any(),
+  banner: z.string().min(1, "Banner is required"),
 });
 
 type MeetupForm = z.infer<typeof meetupSchema>;
@@ -48,33 +48,43 @@ const defaultValues: MeetupForm = {
 };
 
 interface EditMeetupProps {
-  meet: MeetupForm;
-  isUpdate: boolean;
+  event: (MeetupForm & { id: string }) | null;
 }
 
-export default function EventForm({ meet, isUpdate }: EditMeetupProps) {
-  const [preview, setPreview] = useState("");
-
+export default function EventForm({ event }: EditMeetupProps) {
+  const router = useRouter();
   const form = useForm<MeetupForm>({
     resolver: zodResolver(meetupSchema),
-    defaultValues: isUpdate ? meet : defaultValues,
+    defaultValues: event || defaultValues,
   });
 
-  const onSubmit = async (values: MeetupForm) => {
-    const fileBase64 = await toBase64(values.banner[0]);
+  const previewImage = form.watch("banner");
 
-    await createEvent({
-      ...values,
-      date: new Date(values.date),
-      banner: fileBase64,
-    });
+  const onSubmit = async (values: MeetupForm) => {
+    try {
+      if (event) {
+        await updateEvent(event.id, {
+          ...values,
+          date: new Date(values.date),
+        });
+      } else {
+        await createEvent({
+          ...values,
+          date: new Date(values.date),
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      router.push("/");
+    }
   };
 
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle>{isUpdate ? "Edit Meetup" : "Create Meetup"}</CardTitle>
+          <CardTitle>{event ? "Edit Meetup" : "Create Meetup"}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -143,10 +153,13 @@ export default function EventForm({ meet, isUpdate }: EditMeetupProps) {
                           type="file"
                           accept="image/*"
                           {...rest}
-                          onChange={(event) => {
-                            const { files, displayUrl } = getImageData(event);
-                            setPreview(displayUrl);
-                            onChange(files);
+                          onChange={async (event) => {
+                            const files = event.target.files;
+                            if (!files) {
+                              return;
+                            }
+                            const fileBase64 = await toBase64(files[0]);
+                            onChange(fileBase64);
                           }}
                         />
                       </FormControl>
@@ -154,14 +167,14 @@ export default function EventForm({ meet, isUpdate }: EditMeetupProps) {
                     </FormItem>
                   )}
                 />
-                {preview && (
+                {previewImage && (
                   <div className="relative h-64 w-full">
-                    <Image src={preview} alt="Banner Preview" layout="fill" objectFit="cover" />
+                    <Image src={previewImage} alt="Banner Preview" fill className="object-cover" />
                   </div>
                 )}
               </div>
-              <Button className="mt-4 w-full" type="submit">
-                {isUpdate ? "Update Meetup" : "Create Meetup"}
+              <Button className="mt-4 w-full" type="submit" disabled={form.formState.isSubmitting}>
+                {event ? "Update Meetup" : "Create Meetup"}
               </Button>
             </form>
           </Form>
