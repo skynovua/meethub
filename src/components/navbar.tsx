@@ -1,10 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { Presentation } from "lucide-react";
 import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
+import { logout } from "@/actions/logout";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
@@ -13,6 +16,19 @@ interface NavbarProps {
 }
 
 export default function Navbar({ session }: NavbarProps) {
+  const { data: clientSession, update } = useSession();
+
+  useEffect(() => {
+    if (session && !clientSession) {
+      update();
+    }
+  }, [session, clientSession, update]);
+
+  const onLogout = () => {
+    logout();
+    signOut();
+  };
+
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
       <div className="flex items-center justify-between">
@@ -26,7 +42,7 @@ export default function Navbar({ session }: NavbarProps) {
               <Button variant="outline" asChild>
                 <Link href="/">{session.user.name}</Link>
               </Button>
-              <Button variant="outline" onClick={() => signOut()}>
+              <Button variant="outline" onClick={onLogout} disabled={!clientSession?.user}>
                 Logout
               </Button>
             </>

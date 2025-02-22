@@ -14,8 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { type Meetup, meetups } from "../../../data/meetups";
+import { type Meetup, meetups } from "@/data/meetups";
 
 export default function Details({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
