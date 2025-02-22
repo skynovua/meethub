@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,13 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/core/auth";
-
-import { meetups } from "../data/meetups";
+import { meetups } from "@/data/meetups";
 
 export default async function Dashboard() {
-  const session = await auth();
-
   return (
     <>
       <div className="bg-background text-foreground container mx-auto p-4">
