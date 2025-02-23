@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getEventById } from "@/actions/event";
-import DateTime from "@/components/date-time";
+import { DateTimeDisplay } from "@/components/date-time-display";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,7 +29,7 @@ export default async function Details({ params }: { params: Promise<{ id: string
         <CardHeader>
           <CardTitle>{event.title}</CardTitle>
           <CardDescription>
-            <DateTime date={event.date} /> - {event.address}
+            <DateTimeDisplay date={event.date} /> - {event.address}
           </CardDescription>
         </CardHeader>
         <CardContent>
