@@ -33,7 +33,7 @@ export default async function Dashboard() {
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <div className="relative h-40 w-full">
-                  <Image src={event.banner} alt={event.title} fill objectFit="cover" />
+                  <Image src={event.banner} alt={event.title} fill className="object-cover" />
                 </div>
                 <p className="line-clamp-2">{event.description}</p>
               </CardContent>

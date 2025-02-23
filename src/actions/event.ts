@@ -65,3 +65,11 @@ export const updateEvent = async (id: string, options: CreateEvent) => {
     },
   });
 };
+
+export const deleteEvent = async (id: string) => {
+  return db.event.delete({
+    where: {
+      id,
+    },
+  });
+};

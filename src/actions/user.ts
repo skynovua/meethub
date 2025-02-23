@@ -1,11 +1,12 @@
 "use server";
 
+import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
+
 import { signIn } from "@/core/auth";
 import { db } from "@/core/prisma";
 import { DEFAULT_LOGIN_REDIRECT } from "@/core/routes";
-import { SigninPayload, SigninSchema, SignupPayload, SignUpSchema } from "@/lib/schemas";
-import { AuthError } from "next-auth";
-import bcrypt from "bcryptjs";
+import { SignUpSchema, SigninPayload, SigninSchema, SignupPayload } from "@/lib/schemas";
 
 export const register = async (values: SignupPayload) => {
   const validateFields = SignUpSchema.safeParse(values);
@@ -38,7 +39,6 @@ export const register = async (values: SignupPayload) => {
   return {
     success: "Account created.",
   };
-
 };
 
 export const login = async (values: SigninPayload) => {
@@ -76,6 +76,14 @@ export const getUserByEmail = async (email: string) => {
   return db.user.findUnique({
     where: {
       email,
+    },
+  });
+};
+
+export const getUserById = async (id: string) => {
+  return db.user.findUnique({
+    where: {
+      id,
     },
   });
 };
