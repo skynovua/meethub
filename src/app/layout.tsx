@@ -2,7 +2,7 @@ import type React from "react";
 
 import { Inter } from "next/font/google";
 
-import Navbar from "@/components/navbar";
+import { Navbar } from "@/components/navbar";
 import { SessionProvider } from "@/components/session-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";

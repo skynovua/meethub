@@ -1,6 +1,6 @@
 import { getEventById } from "@/actions/event";
-import EventForm from "@/components/event-form";
-import { formatDateForInput } from "@/utils/date";
+import { EventForm } from "@/components/event-form";
+import { transformEventToFormData } from "@/utils/event";
 
 interface EventPageParams {
   params: Promise<{
@@ -12,22 +12,11 @@ export default async function EditMeetup({ params }: EventPageParams) {
   const { id } = await params;
   const isNewMeetup = id === "new";
 
-  const event = isNewMeetup
-    ? null
-    : await getEventById(id).then((event) => {
-        if (!event) {
-          throw new Error("Event not found");
-        }
-
-        return {
-          ...event,
-          date: formatDateForInput(event.date),
-        };
-      });
+  const event = isNewMeetup ? null : await getEventById(id);
 
   return (
     <div className="bg-background text-foreground container mx-auto p-4">
-      <EventForm event={event} />
+      <EventForm event={transformEventToFormData(event, id)} />
     </div>
   );
 }

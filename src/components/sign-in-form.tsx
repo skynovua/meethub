@@ -34,7 +34,7 @@ const defaultValues: SigninPayload = {
   password: "",
 };
 
-export default function SignInForm() {
+export function SignInForm() {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<SigninPayload>({
