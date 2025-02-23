@@ -1,10 +1,10 @@
 "use client";
 
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 
 import { createEvent, updateEvent } from "@/actions/event";
 import { Button } from "@/components/ui/button";
@@ -60,20 +60,15 @@ export function EventForm({ event }: EditMeetupProps) {
           <CardTitle>{event ? "Edit Meetup" : "Create Meetup"}</CardTitle>
         </CardHeader>
         <CardContent>
-          <FormProvider {...form}>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <EventFormFields />
-                <Button
-                  className="mt-4 w-full"
-                  type="submit"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {event ? "Update Meetup" : "Create Meetup"}
-                </Button>
-              </form>
-            </Form>
-          </FormProvider>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <EventFormFields />
+              <Button className="mt-4 w-full" type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {event ? "Update Meetup" : "Create Meetup"}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

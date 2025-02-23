@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
 
 import { login } from "@/actions/user";
 import { Button } from "@/components/ui/button";

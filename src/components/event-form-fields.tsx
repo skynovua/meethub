@@ -1,8 +1,8 @@
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 import Image from "next/image";
 
-import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toBase64 } from "@/utils/file";
@@ -13,7 +13,7 @@ export function EventFormFields() {
 
   return (
     <div className="grid w-full items-center gap-4">
-      <Controller
+      <FormField
         control={control}
         name="title"
         render={({ field }) => (
@@ -26,7 +26,7 @@ export function EventFormFields() {
           </FormItem>
         )}
       />
-      <Controller
+      <FormField
         control={control}
         name="description"
         render={({ field }) => (
@@ -39,7 +39,7 @@ export function EventFormFields() {
           </FormItem>
         )}
       />
-      <Controller
+      <FormField
         control={control}
         name="date"
         render={({ field }) => (
@@ -52,7 +52,7 @@ export function EventFormFields() {
           </FormItem>
         )}
       />
-      <Controller
+      <FormField
         control={control}
         name="address"
         render={({ field }) => (
@@ -65,7 +65,7 @@ export function EventFormFields() {
           </FormItem>
         )}
       />
-      <Controller
+      <FormField
         control={control}
         name="banner"
         render={({ field: { onChange, value, ...rest } }) => (

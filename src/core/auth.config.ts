@@ -1,15 +1,15 @@
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
-import { SigninSchema } from "@/lib/schemas";
+import CredentialsProvider from "next-auth/providers/credentials";
+
 import { db } from "@/core/prisma";
+import { SigninSchema } from "@/lib/schemas";
 
 // Notice this is only an object, not a full Auth.js instance
 export default {
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-
         const validateFields = SigninSchema.safeParse(credentials);
 
         if (!validateFields.success) {
@@ -38,7 +38,21 @@ export default {
           ...user,
           name: user.username,
         };
-      }
+      },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
 } satisfies NextAuthConfig;

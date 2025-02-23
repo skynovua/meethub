@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { getEvents } from "@/actions/event";
@@ -23,17 +24,20 @@ export default async function Dashboard() {
         </Button>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
-            <Card key={event.id}>
+            <Card key={event.id} className="flex h-full flex-col">
               <CardHeader>
                 <CardTitle>{event.title}</CardTitle>
                 <CardDescription>
                   <DateTimeDisplay date={event.date} /> - {event.address}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <p>{event.description}</p>
+              <CardContent className="flex flex-col gap-4">
+                <div className="relative h-40 w-full">
+                  <Image src={event.banner} alt={event.title} fill className="object-cover" />
+                </div>
+                <p className="line-clamp-2">{event.description}</p>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="mt-auto">
                 <Button asChild>
                   <Link href={`/details/${event.id}`}>View Details</Link>
                 </Button>
