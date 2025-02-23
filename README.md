@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MeetHub
+
+[Live Demo](https://meethub-by-skynov.vercel.app/)
+
+MeetHub is a web application for creating and managing meetups. Users can create, edit, and view meetups with details such as title, description, date, location, and banner image.
+
+## Features
+
+- Create new meetups
+- Edit existing meetups
+- View meetup details
+- Upload and preview banner images
+
+## Technologies Used
+
+- React
+- Next.js
+- TypeScript
+- React Hook Form
+- Zod
+- Tailwind CSS
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v18 or higher)
+- npm or yarn or pnpm
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/skynovua/meethub.git
+   cd meethub
+   ```
 
-## Learn More
+2. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Running the Application
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Start the development server:
 
-## Deploy on Vercel
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Open your browser and navigate to `http://localhost:3000`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Project Structure
+
+- `src/components`: Contains React components used in the application.
+  - `event-form.tsx`: Main component for creating and editing meetups.
+  - `event-form-fields.tsx`: Component for rendering form fields.
+- `src/actions`: Contains functions for creating and updating events.
+- `src/lib/schemas`: Contains Zod schemas for form validation.
+- `src/utils`: Contains utility functions.
+
+### Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+
+### License
+
+This project is licensed under the MIT License.
+
