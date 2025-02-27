@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 
 import { db } from "@/core/prisma";
 import { SigninSchema } from "@/lib/schemas";
@@ -8,6 +9,7 @@ import { SigninSchema } from "@/lib/schemas";
 // Notice this is only an object, not a full Auth.js instance
 export default {
   providers: [
+    GitHubProvider,
     CredentialsProvider({
       async authorize(credentials) {
         const validateFields = SigninSchema.safeParse(credentials);
@@ -34,10 +36,7 @@ export default {
           return null;
         }
 
-        return {
-          ...user,
-          name: user.username,
-        };
+        return user;
       },
     }),
   ],

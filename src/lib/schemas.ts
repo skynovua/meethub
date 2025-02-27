@@ -9,7 +9,7 @@ export type SigninPayload = z.infer<typeof SigninSchema>;
 
 export const SignUpSchema = z
   .object({
-    username: z.string().min(2),
+    name: z.string().min(2),
   })
   .merge(SigninSchema);
 

@@ -51,7 +51,7 @@ export default async function Details({ params }: { params: Promise<{ id: string
           )}
           <p>{event.description}</p>
           <p className="mt-4">
-            <strong>Hosted by:</strong> {user?.username}
+            <strong>Hosted by:</strong> {user?.name}
           </p>
         </CardContent>
         <CardFooter>
