@@ -30,7 +30,7 @@ import { Input } from "@/components/ui/input";
 import { SignUpSchema, SignupPayload } from "@/lib/schemas";
 
 const defaultValues: SignupPayload = {
-  username: "",
+  name: "",
   email: "",
   password: "",
 };
@@ -73,7 +73,7 @@ export function SignUpForm() {
             <div className="grid w-full items-center gap-4">
               <FormField
                 control={form.control}
-                name="username"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
@@ -94,7 +94,7 @@ export function SignUpForm() {
                       <Input
                         placeholder="Enter your email"
                         type="email"
-                        autoComplete="username"
+                        autoComplete="name"
                         {...field}
                       />
                     </FormControl>

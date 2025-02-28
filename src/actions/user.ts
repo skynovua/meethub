@@ -15,7 +15,7 @@ export const register = async (values: SignupPayload) => {
     return { error: "Invalid fields." };
   }
 
-  const { email, password, username } = validateFields.data;
+  const { email, password, name } = validateFields.data;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const existingUser = await db.user.findUnique({
@@ -32,7 +32,7 @@ export const register = async (values: SignupPayload) => {
     data: {
       email,
       password: hashedPassword,
-      username,
+      name,
     },
   });
 

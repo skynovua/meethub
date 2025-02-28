@@ -28,7 +28,8 @@ export default async function Dashboard() {
               <CardHeader>
                 <CardTitle>{event.title}</CardTitle>
                 <CardDescription>
-                  <DateTimeDisplay date={event.date} /> - {event.address}
+                  <DateTimeDisplay date={event.date} />
+                  <div>{event.address}</div>
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
