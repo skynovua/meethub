@@ -56,7 +56,7 @@ export function Navbar({ session }: NavbarProps) {
               <DropdownMenuItem asChild>
                 <Link href="/edit/new">
                   <PenIcon />
-                  <span>Create Meetup</span>
+                  <span>Create Event</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>

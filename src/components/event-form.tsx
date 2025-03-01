@@ -57,7 +57,7 @@ export function EventForm({ event }: EditMeetupProps) {
     <div className="bg-background text-foreground container mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle>{event ? "Edit Meetup" : "Create Meetup"}</CardTitle>
+          <CardTitle>{event ? "Edit Event" : "Create Event"}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -65,7 +65,7 @@ export function EventForm({ event }: EditMeetupProps) {
               <EventFormFields />
               <Button className="mt-4 w-full" type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {event ? "Update Meetup" : "Create Meetup"}
+                {event ? "Update Meetup" : "Create Event"}
               </Button>
             </form>
           </Form>
