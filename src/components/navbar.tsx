@@ -45,6 +45,7 @@ export function Navbar({ session }: NavbarProps) {
           <span className="font-bold">MeetHub</span>
         </Link>
         <div className="flex items-center space-x-2">
+          <ThemeSwitcher />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="data-[state=open]:bg-accent">
@@ -54,15 +55,15 @@ export function Navbar({ session }: NavbarProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem asChild>
-                <Link href="/edit/new">
-                  <PenIcon />
-                  <span>Create Event</span>
+                <Link href="/profile">
+                  <User />
+                  <span>Profile</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/profile">
-                  <User />
-                  <span>{user?.name}</span>
+                <Link href="/edit/new">
+                  <PenIcon />
+                  <span>Create Event</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -75,7 +76,6 @@ export function Navbar({ session }: NavbarProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <ThemeSwitcher />
         </div>
       </div>
     </div>
