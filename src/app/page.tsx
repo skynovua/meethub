@@ -20,7 +20,7 @@ export default async function Dashboard() {
     <>
       <div className="bg-background text-foreground container mx-auto p-4">
         <Button className="mb-4" asChild>
-          <Link href={"/edit/new"}> Create Meetup</Link>
+          <Link href={"/edit/new"}> Create Event</Link>
         </Button>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
