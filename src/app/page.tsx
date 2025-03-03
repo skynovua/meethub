@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { getEvents } from "@/actions/event";
 import { DateTimeDisplay } from "@/components/date-time-display";
+import { SortSelect } from "@/components/sort-select";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,17 +14,36 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default async function Dashboard() {
+export default async function Dashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string }>;
+}) {
   const events = await getEvents();
+  const sort = (await searchParams).sort;
+
+  // Sort events based on the sort parameter
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+
+    return sort === "oldest" ? dateA - dateB : dateB - dateA;
+  });
 
   return (
     <>
       <div className="bg-background text-foreground container mx-auto p-4">
-        <Button className="mb-4" asChild>
-          <Link href={"/edit/new"}> Create Event</Link>
-        </Button>
+        <div className="mb-4 flex items-center justify-between">
+          <Button asChild>
+            <Link href={"/edit/new"}> Create Event</Link>
+          </Button>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Sort by:</span>
+            <SortSelect currentSort={sort || "newest"} />
+          </div>
+        </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
+          {sortedEvents.map((event) => (
             <Card key={event.id} className="flex h-full flex-col">
               <CardHeader>
                 <CardTitle>{event.title}</CardTitle>
