@@ -40,7 +40,7 @@ export function SignInForm() {
   const [isPending, startTransition] = useTransition();
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
+  const callbackUrl = searchParams?.get("callbackUrl");
 
   const form = useForm<SigninPayload>({
     resolver: zodResolver(SigninSchema),
