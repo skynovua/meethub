@@ -14,6 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+export const revalidate = 600;
+
 export default async function Dashboard({
   searchParams,
 }: {
@@ -43,7 +45,7 @@ export default async function Dashboard({
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {sortedEvents.map((event) => (
+          {sortedEvents.map((event, index) => (
             <Card key={event.id} className="flex h-full flex-col">
               <CardHeader>
                 <CardTitle>{event.title}</CardTitle>
@@ -54,7 +56,15 @@ export default async function Dashboard({
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <div className="relative h-40 w-full">
-                  <Image src={event.banner} alt={event.title} fill className="object-cover" />
+                  <Image
+                    src={event.banner}
+                    alt={event.title}
+                    fill
+                    className="rounded-md object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={index < 3}
+                    quality={80}
+                  />
                 </div>
                 <p className="line-clamp-2">{event.description}</p>
               </CardContent>

@@ -1,5 +1,6 @@
 "use server";
 
+import { uploadImage } from "@/actions/image";
 import { getUserByEmail } from "@/actions/user";
 import { auth } from "@/core/auth";
 import { db } from "@/core/prisma";
@@ -9,7 +10,7 @@ interface CreateEvent {
   description: string;
   date: Date;
   address: string;
-  banner: string;
+  banner: string; // Може бути base64 або URL
 }
 
 export const createEvent = async (options: CreateEvent) => {
@@ -25,13 +26,24 @@ export const createEvent = async (options: CreateEvent) => {
     throw new Error("User not found");
   }
 
+  // Завантажуємо зображення, якщо це base64
+  let bannerUrl = options.banner;
+  if (options.banner?.startsWith("data:")) {
+    try {
+      bannerUrl = await uploadImage(options.banner);
+    } catch (error) {
+      console.error("Failed to upload banner:", error);
+      throw new Error("Failed to upload banner image");
+    }
+  }
+
   const event = await db.event?.create({
     data: {
       title: options.title,
       description: options.description,
       date: options.date,
       address: options.address,
-      banner: options.banner,
+      banner: bannerUrl, // Зберігаємо URL замість base64
       user_id: user.id,
     },
   });
@@ -52,6 +64,18 @@ export const getEventById = async (id: string) => {
 };
 
 export const updateEvent = async (id: string, options: CreateEvent) => {
+  let bannerUrl = options.banner;
+
+  // Завантажуємо нове зображення, якщо це base64
+  if (options.banner?.startsWith("data:")) {
+    try {
+      bannerUrl = await uploadImage(options.banner);
+    } catch (error) {
+      console.error("Failed to upload banner:", error);
+      throw new Error("Failed to upload banner image");
+    }
+  }
+
   return db.event.update({
     where: {
       id,
@@ -61,7 +85,7 @@ export const updateEvent = async (id: string, options: CreateEvent) => {
       description: options.description,
       date: options.date,
       address: options.address,
-      banner: options.banner,
+      banner: bannerUrl,
     },
   });
 };

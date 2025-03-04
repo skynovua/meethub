@@ -46,10 +46,9 @@ export function EventForm({ event }: EditMeetupProps) {
           date: new Date(values.date),
         });
       }
+      router.push("/");
     } catch (error) {
       console.error(error);
-    } finally {
-      router.push("/");
     }
   };
 
