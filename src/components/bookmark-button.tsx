@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 interface BookmarkButtonProps {
   eventId: string;
   initialIsBookmarked: boolean;
-  variant?: "default" | "outline" | "ghost";
+  variant?: "default" | "outline" | "ghost" | "secondary";
   size?: "default" | "sm" | "lg" | "icon";
 }
 

@@ -13,7 +13,7 @@ interface FavoriteButtonProps {
   initialIsFavorite: boolean;
   favoriteCount: number;
   showCount?: boolean;
-  variant?: "default" | "outline" | "ghost";
+  variant?: "default" | "outline" | "ghost" | "secondary";
   size?: "default" | "sm" | "lg" | "icon";
 }
 
