@@ -2,14 +2,16 @@
 
 [Live Demo](https://meethub-by-skynov.vercel.app/)
 
-MeetHub is a web application for creating and managing meetups. Users can create, edit, and view meetups with details such as title, description, date, location, and banner image.
+MeetHub is an event management application that allows users to create, bookmark, and favorite events.
 
 ## Features
 
-- Create new meetups
-- Edit existing meetups
-- View meetup details
-- Upload and preview banner images
+- Create and manage events
+- Bookmark events for later viewing
+- Like/favorite events
+- Sort events by popularity or date
+- User authentication
+- Profile page with saved and favorite events
 
 ## Technologies Used
 
@@ -24,50 +26,64 @@ MeetHub is a web application for creating and managing meetups. Users can create
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm or yarn or pnpm
+- Node.js 18+ and npm
+- PostgreSQL database
+- Supabase account (for image storage)
 
 ### Installation
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/skynovua/meethub.git
-   cd meethub
-   ```
+```bash
+git clone https://github.com/skynovua/meethub.git
+cd meethub
+```
 
 2. Install dependencies:
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Environment Variables
+
+Create a `.env` file in the root directory based on the `.env.example` file and fill in the required values.
+
+```bash
+cp .env.example .env
+```
+
+### Database Setup
+
+1. Set up the database schema:
+
+```bash
+npx prisma migrate dev
+```
+
+2. Generate Prisma client:
+
+```bash
+npx prisma generate
+```
 
 ### Running the Application
 
 1. Start the development server:
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm run dev
-   ```
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm run dev
+```
 
 2. Open your browser and navigate to `http://localhost:3000`.
-
-### Project Structure
-
-- `src/components`: Contains React components used in the application.
-  - `event-form.tsx`: Main component for creating and editing meetups.
-  - `event-form-fields.tsx`: Component for rendering form fields.
-- `src/actions`: Contains functions for creating and updating events.
-- `src/lib/schemas`: Contains Zod schemas for form validation.
-- `src/utils`: Contains utility functions.
 
 ### Contributing
 
@@ -76,4 +92,3 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ### License
 
 This project is licensed under the MIT License.
-
