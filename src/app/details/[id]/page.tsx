@@ -42,7 +42,7 @@ export default async function EventDetailsPage({ params }: { params: { id: strin
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="relative h-80 w-full">
+          <div className="relative aspect-16/9 w-full">
             <Image src={event.banner} alt={event.title} fill className="rounded-lg object-cover" />
           </div>
 
