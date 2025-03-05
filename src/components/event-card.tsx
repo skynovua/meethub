@@ -1,4 +1,5 @@
 import { Event } from "@prisma/client";
+import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -31,23 +32,42 @@ export async function EventCard({ event }: EventCardProps) {
   const favoriteCount = event._count?.favorites || 0;
 
   return (
-    <Card key={event.id} className="flex h-full flex-col">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{event.title}</CardTitle>
-          <BookmarkButton eventId={event.id} initialIsBookmarked={isBookmarked} />
+    <Card key={event.id} className="flex h-full flex-col overflow-hidden">
+      {/* Image container with no horizontal padding or margin */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden">
+        <Image
+          src={event.banner}
+          alt={event.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority
+        />
+        {/* Overlay for bookmark button */}
+        <div className="absolute top-2 right-2">
+          <BookmarkButton
+            eventId={event.id}
+            initialIsBookmarked={isBookmarked}
+            variant="secondary"
+            size="sm"
+          />
         </div>
-        <CardDescription>
-          <DateTimeDisplay date={event.date} />
-          <div>{event.address}</div>
+      </div>
+
+      <CardHeader>
+        <CardTitle className="line-clamp-1">{event.title}</CardTitle>
+        <CardDescription className="flex items-center gap-1">
+          <Calendar className="h-4 w-4" /> <DateTimeDisplay date={event.date} />
+        </CardDescription>
+        <CardDescription className="flex items-center gap-1">
+          <MapPin className="h-4 w-4" /> {event.address}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className="relative h-40 w-full">
-          <Image src={event.banner} alt={event.title} fill className="rounded-md object-cover" />
-        </div>
+
+      <CardContent>
         <p className="line-clamp-2">{event.description}</p>
       </CardContent>
+
       <CardFooter className="mt-auto flex justify-between">
         <Button asChild>
           <Link href={`/details/${event.id}`}>View Details</Link>

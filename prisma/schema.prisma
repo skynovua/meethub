@@ -44,17 +44,35 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+// Define EventCategory enum
+enum EventCategory {
+  CONFERENCE
+  WORKSHOP
+  SEMINAR
+  NETWORKING
+  SOCIAL
+  TECH
+  BUSINESS
+  ARTS
+  SPORTS
+  EDUCATION
+  ENTERTAINMENT
+  COMMUNITY
+  OTHER
+}
+
 model Event {
-  id          String     @id @default(cuid())
+  id          String        @id @default(cuid())
   title       String
   description String
   date        DateTime
   banner      String
   address     String
+  category    EventCategory @default(OTHER) // Changed to enum with default value
   user_id     String
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
-  user        User       @relation(fields: [user_id], references: [id])
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  user        User          @relation(fields: [user_id], references: [id])
   favorites   Favorite[] // Користувачі, які вподобали подію
   bookmarks   Bookmark[] // Користувачі, які зберегли подію
 }

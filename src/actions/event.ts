@@ -195,10 +195,7 @@ export const updateEvent = async (id: string, options: CreateEvent) => {
       id,
     },
     data: {
-      title: options.title,
-      description: options.description,
-      date: options.date,
-      address: options.address,
+      ...options,
       banner: bannerUrl,
     },
   });
