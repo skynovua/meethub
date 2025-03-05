@@ -20,11 +20,11 @@ export function SortSelect({ currentSort }: { currentSort: string }) {
   return (
     <Select defaultValue={currentSort} onValueChange={handleValueChange}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Sort by date" />
+        <SelectValue placeholder="Sort events" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="newest">Newest first</SelectItem>
-        <SelectItem value="oldest">Oldest first</SelectItem>
+        <SelectItem value="popular">Most popular</SelectItem>
+        <SelectItem value="newest">Upcoming</SelectItem>
       </SelectContent>
     </Select>
   );

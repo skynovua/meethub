@@ -51,14 +51,128 @@ export const createEvent = async (options: CreateEvent) => {
   return event;
 };
 
+// Отримання всіх подій з кількістю вподобань
 export const getEvents = async () => {
-  return db.event.findMany();
+  const events = await db.event.findMany({
+    include: {
+      _count: {
+        select: {
+          favorites: true,
+          bookmarks: true,
+        },
+      },
+    },
+  });
+
+  return events;
+};
+
+// Отримання подій, відсортованих за популярністю
+export const getEventsByPopularity = async () => {
+  const events = await db.event.findMany({
+    include: {
+      _count: {
+        select: {
+          favorites: true,
+        },
+      },
+    },
+    orderBy: {
+      favorites: {
+        _count: "desc",
+      },
+    },
+  });
+
+  return events;
+};
+
+// Оновлена функція getUserFavoriteEvents
+export const getUserFavoriteEvents = async () => {
+  const session = await auth();
+
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await getUserByEmail(session.user.email!);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const favorites = await db.favorite.findMany({
+    where: {
+      user_id: user.id,
+    },
+    include: {
+      event: {
+        include: {
+          _count: {
+            select: {
+              favorites: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+
+  return favorites.map((favorite) => favorite.event);
+};
+
+// Оновлена функція getUserBookmarkedEvents
+export const getUserBookmarkedEvents = async () => {
+  const session = await auth();
+
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await getUserByEmail(session.user.email!);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const bookmarks = await db.bookmark.findMany({
+    where: {
+      user_id: user.id,
+    },
+    include: {
+      event: {
+        include: {
+          _count: {
+            select: {
+              favorites: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+
+  return bookmarks.map((bookmark) => bookmark.event);
 };
 
 export const getEventById = async (id: string) => {
   return db.event.findUnique({
     where: {
       id,
+    },
+    include: {
+      _count: {
+        select: {
+          favorites: true,
+          bookmarks: true,
+        },
+      },
     },
   });
 };
