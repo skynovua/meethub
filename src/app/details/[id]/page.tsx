@@ -1,3 +1,4 @@
+import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,6 +10,8 @@ import { DateTimeDisplay } from "@/components/date-time-display";
 import { FavoriteButton } from "@/components/favorite-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { getGoogleMapsUrl } from "@/utils/maps";
 
 export const revalidate = 0;
 
@@ -21,8 +24,8 @@ export default async function EventDetailsPage({ params }: { params: { id: strin
 
   const isFavorite = await isEventFavorite(event.id);
   const isBookmarked = await isEventBookmarked(event.id);
-
   const favoriteCount = event._count?.favorites || 0;
+  const mapsUrl = getGoogleMapsUrl(event.address);
 
   return (
     <div className="container mx-auto p-4">
@@ -45,14 +48,31 @@ export default async function EventDetailsPage({ params }: { params: { id: strin
 
           <div className="flex flex-col gap-2 pt-4">
             <div className="text-muted-foreground flex items-center gap-2">
-              <DateTimeDisplay date={event.date} />
+              <Calendar className="h-4 w-4" /> <DateTimeDisplay date={event.date} />
             </div>
-            <div className="text-muted-foreground">{event.address}</div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground inline-flex w-max items-center gap-2"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    <span>{event.address}</span>
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Opens in a new tab</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <div className="pt-4">
-            <h3 className="text-lg font-medium">Description</h3>
-            <p className="text-muted-foreground whitespace-pre-wrap">{event.description}</p>
+            <h3 className="mb-1 text-lg font-medium">Description</h3>
+            <p className="prose lg:prose-x text-muted-foreground">{event.description}</p>
           </div>
 
           <div className="flex justify-between pt-6">

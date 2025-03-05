@@ -1,4 +1,5 @@
 import { Event } from "@prisma/client";
+import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,13 +38,15 @@ export async function EventCard({ event }: EventCardProps) {
           <CardTitle>{event.title}</CardTitle>
           <BookmarkButton eventId={event.id} initialIsBookmarked={isBookmarked} />
         </div>
-        <CardDescription>
-          <DateTimeDisplay date={event.date} />
-          <div>{event.address}</div>
+        <CardDescription className="flex items-center gap-1">
+          <Calendar className="h-4 w-4" /> <DateTimeDisplay date={event.date} />
+        </CardDescription>
+        <CardDescription className="flex items-center gap-1">
+          <MapPin className="h-4 w-4" /> {event.address}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="relative h-40 w-full">
+        <div className="relative aspect-16/9 w-full">
           <Image src={event.banner} alt={event.title} fill className="rounded-md object-cover" />
         </div>
         <p className="line-clamp-2">{event.description}</p>
