@@ -12,11 +12,8 @@ export const transformEventToFormData = (
   }
 
   return {
-    title: data.title,
-    description: data.description,
+    ...data,
     date: formatDateForInput(data.date),
-    address: data.address,
-    banner: data.banner,
     id: id.toString(),
   };
 };

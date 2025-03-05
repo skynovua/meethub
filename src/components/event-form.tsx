@@ -7,7 +7,6 @@ import { EventCategory } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 
 import { createEvent, updateEvent } from "@/actions/event";
 import { Button } from "@/components/ui/button";
@@ -30,27 +29,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { EVENT_CATEGORIES } from "@/lib/constants";
+import { EventFormData, EventFormSchema } from "@/lib/schemas";
 import { toBase64 } from "@/utils/file";
 
-const meetupSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  date: z.string().refine(
-    (value) => {
-      return !isNaN(Date.parse(value));
-    },
-    {
-      message: "Invalid datetime format",
-    },
-  ),
-  address: z.string().min(1, "Location is required"),
-  banner: z.string().min(1, "Banner is required"),
-  category: z.nativeEnum(EventCategory),
-});
-
-type MeetupForm = z.infer<typeof meetupSchema>;
-
-const defaultValues: MeetupForm = {
+const defaultValues: EventFormData = {
   title: "",
   description: "",
   date: "",
@@ -60,19 +42,19 @@ const defaultValues: MeetupForm = {
 };
 
 interface EditMeetupProps {
-  event: (MeetupForm & { id: string }) | null;
+  event: (EventFormData & { id: string }) | null;
 }
 
 export function EventForm({ event }: EditMeetupProps) {
   const router = useRouter();
-  const form = useForm<MeetupForm>({
-    resolver: zodResolver(meetupSchema),
+  const form = useForm<EventFormData>({
+    resolver: zodResolver(EventFormSchema),
     defaultValues: event || defaultValues,
   });
 
   const previewImage = form.watch("banner");
 
-  const onSubmit = async (values: MeetupForm) => {
+  const onSubmit = async (values: EventFormData) => {
     try {
       if (event) {
         await updateEvent(event.id, {

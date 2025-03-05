@@ -40,8 +40,6 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
     return notFound();
   }
 
-  console.log(event);
-
   const organizer = await getUserById(event.user_id);
   const isFavorite = await isEventFavorite(event.id);
   const isBookmarked = await isEventBookmarked(event.id);

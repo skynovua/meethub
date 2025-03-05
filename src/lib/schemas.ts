@@ -1,3 +1,4 @@
+import { EventCategory } from "@prisma/client";
 import { z } from "zod";
 
 export const SigninSchema = z.object({
@@ -28,6 +29,7 @@ export const EventFormSchema = z.object({
   ),
   address: z.string().min(1, "Location is required"),
   banner: z.string().min(1, "Banner is required"),
+  category: z.nativeEnum(EventCategory),
 });
 
 export type EventFormData = z.infer<typeof EventFormSchema>;

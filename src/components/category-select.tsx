@@ -1,5 +1,7 @@
 "use client";
 
+import { EventCategory } from "@prisma/client";
+
 import {
   Select,
   SelectContent,
@@ -8,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CATEGORY_DISPLAY_NAMES, EVENT_CATEGORIES, EventCategory } from "@/lib/constants";
+import { CATEGORY_DISPLAY_NAMES, EVENT_CATEGORIES } from "@/lib/constants";
 
 interface CategorySelectProps {
   value: EventCategory;
