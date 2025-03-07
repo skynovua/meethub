@@ -25,30 +25,37 @@ interface ShareDialogProps {
 export function ShareDialog({ children, url, title }: ShareDialogProps) {
   const [open, setOpen] = useState(false);
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard!");
+  const getFullUrl = () => {
+    if (url.startsWith("http")) return url;
+    return `${window.location.origin}${url.startsWith("/") ? "" : "/"}${url}`;
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(getFullUrl());
+      toast.success("Link copied to clipboard!");
+    } catch (error) {
+      console.error("Copy failed:", error);
+      toast.error("Failed to copy link");
+    }
   };
 
   const shareOnTwitter = () => {
-    window.open(
-      `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      "_blank",
-    );
+    const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(getFullUrl())}&text=${encodeURIComponent(title)}`;
+    window.open(shareUrl, "_blank", "width=550,height=420");
+    setOpen(false);
   };
 
   const shareOnFacebook = () => {
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      "_blank",
-    );
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getFullUrl())}`;
+    window.open(shareUrl, "_blank", "width=626,height=436");
+    setOpen(false);
   };
 
   const shareOnLinkedIn = () => {
-    window.open(
-      `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
-      "_blank",
-    );
+    const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getFullUrl())}`;
+    window.open(shareUrl, "_blank", "width=750,height=600");
+    setOpen(false);
   };
 
   return (
@@ -61,7 +68,7 @@ export function ShareDialog({ children, url, title }: ShareDialogProps) {
         </DialogHeader>
         <div className="mt-4 flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
-            <Input readOnly value={url} className="focus-visible:ring-0" />
+            <Input readOnly value={getFullUrl()} className="focus-visible:ring-0" />
           </div>
           <Button type="button" size="sm" onClick={handleCopyLink}>
             <Link className="mr-2 h-4 w-4" />
@@ -69,14 +76,35 @@ export function ShareDialog({ children, url, title }: ShareDialogProps) {
           </Button>
         </div>
         <div className="mt-4 flex justify-center space-x-4">
-          <Button onClick={shareOnTwitter} size="icon" variant="outline">
-            <Twitter className="h-5 w-5" />
+          <Button
+            onClick={shareOnTwitter}
+            size="icon"
+            variant="outline"
+            className="hover:bg-[#1DA1F2]/10"
+            title="Share on Twitter"
+          >
+            <Twitter className="h-5 w-5 text-[#1DA1F2]" />
+            <span className="sr-only">Share on Twitter</span>
           </Button>
-          <Button onClick={shareOnFacebook} size="icon" variant="outline">
-            <Facebook className="h-5 w-5" />
+          <Button
+            onClick={shareOnFacebook}
+            size="icon"
+            variant="outline"
+            className="hover:bg-[#1877F2]/10"
+            title="Share on Facebook"
+          >
+            <Facebook className="h-5 w-5 text-[#1877F2]" />
+            <span className="sr-only">Share on Facebook</span>
           </Button>
-          <Button onClick={shareOnLinkedIn} size="icon" variant="outline">
-            <Linkedin className="h-5 w-5" />
+          <Button
+            onClick={shareOnLinkedIn}
+            size="icon"
+            variant="outline"
+            className="hover:bg-[#0A66C2]/10"
+            title="Share on LinkedIn"
+          >
+            <Linkedin className="h-5 w-5 text-[#0A66C2]" />
+            <span className="sr-only">Share on LinkedIn</span>
           </Button>
         </div>
       </DialogContent>
