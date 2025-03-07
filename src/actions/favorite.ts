@@ -1,5 +1,6 @@
 "use server";
 
+import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 import { getUserByEmail } from "@/actions/user";
@@ -12,7 +13,7 @@ export const addToFavorites = async (eventId: string) => {
     const session = await auth();
 
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new AuthError("You must be signed in to add favorites");
     }
 
     const user = await getUserByEmail(session.user.email!);
@@ -44,11 +45,14 @@ export const addToFavorites = async (eventId: string) => {
     });
 
     revalidatePath("/");
-    revalidatePath(`/details/${eventId}`);
+    revalidatePath(`/events/${eventId}`);
 
     return { success: true };
   } catch (error) {
     console.error("Error adding to favorites:", error);
+    if (error instanceof AuthError) {
+      throw error;
+    }
     throw new Error(
       `Failed to add to favorites: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
@@ -61,7 +65,7 @@ export const removeFromFavorites = async (eventId: string) => {
     const session = await auth();
 
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new AuthError("You must be signed in to remove favorites");
     }
 
     const user = await getUserByEmail(session.user.email!);
@@ -80,11 +84,14 @@ export const removeFromFavorites = async (eventId: string) => {
     });
 
     revalidatePath("/");
-    revalidatePath(`/details/${eventId}`);
+    revalidatePath(`/events/${eventId}`);
 
     return { success: true };
   } catch (error) {
     console.error("Error removing from favorites:", error);
+    if (error instanceof AuthError) {
+      throw error;
+    }
     throw new Error(
       `Failed to remove from favorites: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
@@ -97,7 +104,7 @@ export const addToBookmarks = async (eventId: string) => {
     const session = await auth();
 
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new AuthError("You must be signed in to bookmark events");
     }
 
     const user = await getUserByEmail(session.user.email!);
@@ -133,6 +140,9 @@ export const addToBookmarks = async (eventId: string) => {
     return { success: true };
   } catch (error) {
     console.error("Error adding to bookmarks:", error);
+    if (error instanceof AuthError) {
+      throw error;
+    }
     throw new Error(
       `Failed to add to bookmarks: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
@@ -145,7 +155,7 @@ export const removeFromBookmarks = async (eventId: string) => {
     const session = await auth();
 
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new AuthError("You must be signed in to remove bookmarks");
     }
 
     const user = await getUserByEmail(session.user.email!);
@@ -168,6 +178,9 @@ export const removeFromBookmarks = async (eventId: string) => {
     return { success: true };
   } catch (error) {
     console.error("Error removing from bookmarks:", error);
+    if (error instanceof AuthError) {
+      throw error;
+    }
     throw new Error(
       `Failed to remove from bookmarks: ${error instanceof Error ? error.message : "Unknown error"}`,
     );

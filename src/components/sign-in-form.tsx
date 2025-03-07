@@ -49,7 +49,7 @@ export function SignInForm() {
 
   const onSubmit = async (values: SigninPayload) => {
     startTransition(() =>
-      login(values).then((data) => {
+      login(values, callbackUrl).then((data) => {
         if (data?.error) {
           form.setError("email", {
             type: "manual",
