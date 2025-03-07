@@ -55,27 +55,36 @@ export const createEvent = async (options: CreateEvent) => {
 export const getEvents = async () => {
   const events = await db.event.findMany({
     include: {
-      _count: {
+      user: {
         select: {
-          favorites: true,
-          bookmarks: true,
+          name: true,
+          image: true,
         },
       },
+      favorites: true,
+      bookmarks: true,
     },
   });
 
-  return events;
+  return events.map((event) => ({
+    ...event,
+    favoriteCount: event.favorites.length,
+    bookmarkCount: event.bookmarks.length,
+  }));
 };
 
 // Отримання подій, відсортованих за популярністю
 export const getEventsByPopularity = async () => {
   const events = await db.event.findMany({
     include: {
-      _count: {
+      user: {
         select: {
-          favorites: true,
+          name: true,
+          image: true,
         },
       },
+      favorites: true,
+      bookmarks: true,
     },
     orderBy: {
       favorites: {
@@ -84,7 +93,11 @@ export const getEventsByPopularity = async () => {
     },
   });
 
-  return events;
+  return events.map((event) => ({
+    ...event,
+    favoriteCount: event.favorites.length,
+    bookmarkCount: event.bookmarks.length,
+  }));
 };
 
 // Оновлена функція getUserFavoriteEvents

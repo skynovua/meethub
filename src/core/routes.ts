@@ -1,4 +1,11 @@
 /**
+ * An array of routes that require authentication
+ * Users must be logged in to access these routes
+ * @type {string[]}
+ */
+export const privateRoutes = ["/profile", "/events/edit/new", "/events/edit/[id]"];
+
+/**
  * An array of authentication-related route paths.
  *
  * This array contains the paths for login and registration routes

@@ -6,6 +6,7 @@ import { BookmarkIcon } from "lucide-react";
 
 import { addToBookmarks, removeFromBookmarks } from "@/actions/favorite";
 import { Button } from "@/components/ui/button";
+import { useAuthProtection } from "@/hooks/use-auth-protection";
 import { cn } from "@/lib/utils";
 
 interface BookmarkButtonProps {
@@ -23,6 +24,7 @@ export function BookmarkButton({
 }: BookmarkButtonProps) {
   const [isPending, startTransition] = useTransition();
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
+  const { withAuth } = useAuthProtection();
 
   const handleToggleBookmark = () => {
     startTransition(async () => {
@@ -39,12 +41,15 @@ export function BookmarkButton({
     });
   };
 
+  // Wrap the handler with auth check
+  const handleClick = withAuth(handleToggleBookmark);
+
   return (
     <Button
       variant={variant}
       size={size}
       disabled={isPending}
-      onClick={handleToggleBookmark}
+      onClick={handleClick}
       aria-label={isBookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
     >
       <BookmarkIcon

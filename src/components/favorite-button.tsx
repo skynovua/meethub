@@ -6,28 +6,30 @@ import { HeartIcon } from "lucide-react";
 
 import { addToFavorites, removeFromFavorites } from "@/actions/favorite";
 import { Button } from "@/components/ui/button";
+import { useAuthProtection } from "@/hooks/use-auth-protection";
 import { cn } from "@/lib/utils";
 
 interface FavoriteButtonProps {
   eventId: string;
   initialIsFavorite: boolean;
-  favoriteCount: number;
-  showCount?: boolean;
+  favoriteCount?: number;
   variant?: "default" | "outline" | "ghost" | "secondary";
   size?: "default" | "sm" | "lg" | "icon";
+  showCount?: boolean;
 }
 
 export function FavoriteButton({
   eventId,
   initialIsFavorite,
-  favoriteCount,
-  showCount = true,
-  variant = "outline",
-  size = "default",
+  favoriteCount = 0,
+  variant = "ghost",
+  size = "icon",
+  showCount = false,
 }: FavoriteButtonProps) {
   const [isPending, startTransition] = useTransition();
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
   const [count, setCount] = useState(favoriteCount);
+  const { withAuth } = useAuthProtection();
 
   const handleToggleFavorite = () => {
     startTransition(async () => {
@@ -46,18 +48,22 @@ export function FavoriteButton({
     });
   };
 
+  // Wrap the handler with auth check
+  const handleClick = withAuth(handleToggleFavorite);
+
   return (
     <Button
       variant={variant}
       size={size}
       disabled={isPending}
-      onClick={handleToggleFavorite}
+      onClick={handleClick}
       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      className={cn(showCount && "gap-2")}
     >
       <HeartIcon
-        className={cn("mr-1 h-4 w-4", isFavorite ? "fill-red-500 text-red-500" : "fill-none")}
+        className={cn("h-4 w-4", isFavorite ? "fill-red-500 text-red-500" : "fill-none")}
       />
-      {showCount && <span>{count}</span>}
+      {showCount && count > 0 && <span className="text-xs">{count}</span>}
     </Button>
   );
 }

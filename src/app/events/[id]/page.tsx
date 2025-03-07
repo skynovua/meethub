@@ -54,7 +54,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
       <Breadcrumb className="mb-4">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Events</BreadcrumbLink>
+            <BreadcrumbLink href="/events">Events</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -88,7 +88,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
               variant="secondary"
             />
             <ShareDialog
-              url={`${process.env.NEXT_PUBLIC_APP_URL}/details/${event.id}`}
+              url={`${process.env.NEXT_PUBLIC_APP_URL}/events/${event.id}`}
               title={event.title}
             >
               <Button variant="secondary" size="icon">
@@ -177,7 +177,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
             {event.user_id === session?.user?.id && (
               <div className="flex gap-2">
                 <Button asChild>
-                  <Link href={`/edit/${event.id}`}>Edit Event</Link>
+                  <Link href={`/events/edit/${event.id}`}>Edit Event</Link>
                 </Button>
                 <EventDeleteButton eventID={id} />
               </div>

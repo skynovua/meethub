@@ -41,7 +41,7 @@ export const register = async (values: SignupPayload) => {
   };
 };
 
-export const login = async (values: SigninPayload) => {
+export const login = async (values: SigninPayload, callbackUrl?: string | null) => {
   const validateFields = SigninSchema.safeParse(values);
 
   if (!validateFields.success) {
@@ -54,7 +54,7 @@ export const login = async (values: SigninPayload) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     if (error instanceof AuthError) {
