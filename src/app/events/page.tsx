@@ -2,7 +2,7 @@ import { Suspense } from "react";
 
 import { Metadata } from "next";
 
-import { getAllEvents } from "@/actions/events";
+import { getAllEvents } from "@/actions/event";
 import { EventFilters } from "@/components/events/event-filters";
 import { EventGrid } from "@/components/events/event-grid";
 import { EventsSearch } from "@/components/events/events-search";

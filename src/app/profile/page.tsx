@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { getUserBookmarkedEvents, getUserFavoriteEvents } from "@/actions/event";
+import { getUserBookmarkedEvents, getUserFavoritedEvents } from "@/actions/event";
 import { getUserByEmail } from "@/actions/user";
 import { EventCard } from "@/components/event-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +24,7 @@ export default async function ProfilePage() {
 
   // Get user's bookmarked and favorite events
   const bookmarkedEvents = await getUserBookmarkedEvents();
-  const favoriteEvents = await getUserFavoriteEvents();
+  const favoriteEvents = await getUserFavoritedEvents();
 
   return (
     <div className="container mx-auto p-4">

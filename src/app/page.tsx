@@ -1,4 +1,4 @@
-import { getEvents, getEventsByPopularity } from "@/actions/event";
+import { getAllEvents, getPopularEvents } from "@/actions/event";
 import { EventCard } from "@/components/event-card";
 import { SortSelect } from "@/components/sort-select";
 
@@ -15,11 +15,11 @@ export default async function Dashboard({
 
   switch (sort) {
     case "popular":
-      events = await getEventsByPopularity();
+      events = await getPopularEvents();
       break;
     case "newest":
     default:
-      events = await getEvents();
+      events = await getAllEvents({});
       break;
   }
 

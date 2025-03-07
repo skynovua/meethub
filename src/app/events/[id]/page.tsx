@@ -43,7 +43,6 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
   const organizer = await getUserById(event.user_id);
   const isFavorite = await isEventFavorite(event.id);
   const isBookmarked = await isEventBookmarked(event.id);
-  const favoriteCount = event._count?.favorites || 0;
   const mapsUrl = getGoogleMapsUrl(event.address);
   const eventDate = new Date(event.date);
   const isUpcoming = eventDate > new Date();
@@ -84,8 +83,10 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
             <FavoriteButton
               eventId={event.id}
               initialIsFavorite={isFavorite}
-              favoriteCount={favoriteCount}
+              favoriteCount={event.favoriteCount}
               variant="secondary"
+              size="default"
+              showCount
             />
             <ShareDialog
               url={`${process.env.NEXT_PUBLIC_APP_URL}/events/${event.id}`}
