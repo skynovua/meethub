@@ -17,7 +17,7 @@ export default async function Dashboard({
     case "popular":
       events = await getPopularEvents();
       break;
-    case "newest":
+    case "upcoming":
     default:
       events = await getAllEvents({});
       break;
@@ -25,7 +25,7 @@ export default async function Dashboard({
 
   const sortedEvents = [...events];
 
-  if (sort === "newest") {
+  if (sort === "upcoming") {
     sortedEvents.sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();

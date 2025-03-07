@@ -59,12 +59,6 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         authors: organizer?.name || "MeetHub Organizer",
         siteName: "MeetHub",
       },
-      twitter: {
-        card: "summary_large_image",
-        title: event.title,
-        description: event.description.substring(0, 160),
-        images: [event.banner],
-      },
     };
   } catch (error) {
     return {
