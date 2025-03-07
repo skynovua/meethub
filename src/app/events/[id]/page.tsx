@@ -1,6 +1,7 @@
 import { EventCategory } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { Calendar, MapPin, Share2, User } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -30,6 +31,48 @@ import { auth } from "@/core/auth";
 import { getGoogleMapsUrl } from "@/utils/maps";
 
 export const revalidate = 0;
+
+// Динамічні метадані для сторінки деталей події
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  try {
+    const event = await getEventById(params.id);
+
+    if (!event) {
+      return {
+        title: "Event Not Found | MeetHub",
+        description: "The requested event could not be found.",
+      };
+    }
+
+    const organizer = await getUserById(event.user_id);
+    const eventDate = new Date(event.date);
+
+    return {
+      title: `${event.title} | MeetHub`,
+      description: event.description.substring(0, 160),
+      openGraph: {
+        title: event.title,
+        description: event.description.substring(0, 160),
+        images: [{ url: event.banner }],
+        type: "article",
+        publishedTime: event.created_at.toISOString(),
+        authors: organizer?.name || "MeetHub Organizer",
+        siteName: "MeetHub",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: event.title,
+        description: event.description.substring(0, 160),
+        images: [event.banner],
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Event Details | MeetHub",
+      description: "View details of this exciting event on MeetHub.",
+    };
+  }
+}
 
 export default async function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
