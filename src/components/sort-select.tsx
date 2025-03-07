@@ -24,7 +24,7 @@ export function SortSelect({ currentSort }: { currentSort: string }) {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="popular">Most popular</SelectItem>
-        <SelectItem value="newest">Upcoming</SelectItem>
+        <SelectItem value="upcoming">Upcoming</SelectItem>
       </SelectContent>
     </Select>
   );

@@ -1,7 +1,5 @@
 import { Suspense } from "react";
 
-import { Metadata } from "next";
-
 import { getAllEvents } from "@/actions/event";
 import { EventFilters } from "@/components/events/event-filters";
 import { EventGrid } from "@/components/events/event-grid";
@@ -9,11 +7,6 @@ import { EventsSearch } from "@/components/events/events-search";
 import { SelectedFilters } from "@/components/events/selected-filters";
 import { PageHeading } from "@/components/page-heading";
 import { Skeleton } from "@/components/ui/skeleton";
-
-export const metadata: Metadata = {
-  title: "Events | MeetHub",
-  description: "Discover upcoming events and meetups",
-};
 
 interface EventsPageProps {
   searchParams: {

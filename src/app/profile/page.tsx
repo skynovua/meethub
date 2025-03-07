@@ -9,6 +9,25 @@ import { auth } from "@/core/auth";
 
 export const revalidate = 0;
 
+// metadate for profile page
+export async function generateMetadata() {
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    return {
+      title: "Profile | MeetHub",
+      description: "View your profile and manage your events and bookmarks.",
+    };
+  }
+
+  const user = await getUserByEmail(session.user.email);
+
+  return {
+    title: `${user?.name} | MeetHub`,
+    description: "View your profile and manage your events and bookmarks.",
+  };
+}
+
 export default async function ProfilePage() {
   const session = await auth();
 
