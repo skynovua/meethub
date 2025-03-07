@@ -1,5 +1,6 @@
 // Define enum to match Prisma schema
 import { EventCategory } from "@prisma/client";
+import { Calendar, CalendarClock, CalendarRange } from "lucide-react";
 
 // Array of enum values for use in components
 export const EVENT_CATEGORIES = Object.values(EventCategory);
@@ -20,3 +21,20 @@ export const CATEGORY_DISPLAY_NAMES: Record<EventCategory, string> = {
   [EventCategory.COMMUNITY]: "Community",
   [EventCategory.OTHER]: "Other",
 };
+
+// Array of date filters for use in components
+export const DATE_FILTERS = [
+  { value: "upcoming", label: "Upcoming", icon: CalendarClock },
+  { value: "today", label: "Today", icon: Calendar },
+  { value: "week", label: "This week", icon: CalendarRange },
+  { value: "month", label: "This month", icon: CalendarRange },
+];
+
+// Map of date filter values to display names
+export const DATE_DISPLAY_NAMES = DATE_FILTERS.reduce(
+  (acc, filter) => {
+    acc[filter.value] = filter.label;
+    return acc;
+  },
+  {} as Record<string, string>,
+);
