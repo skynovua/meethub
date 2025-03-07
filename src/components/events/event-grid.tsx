@@ -1,7 +1,4 @@
-import Link from "next/link";
-
 import { EventCard } from "@/components/event-card";
-import { Button } from "@/components/ui/button";
 import { EventWithDetails } from "@/types/event";
 
 interface EventGridProps {
@@ -19,9 +16,6 @@ export function EventGrid({ events, hasFilters }: EventGridProps) {
             ? "Try adjusting your filters or search terms"
             : "There are currently no events scheduled"}
         </p>
-        <Button asChild>
-          <Link href="/events">Clear filters</Link>
-        </Button>
       </div>
     );
   }
