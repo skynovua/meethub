@@ -9,21 +9,18 @@ import { PageHeading } from "@/components/page-heading";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface EventsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     query?: string;
     category?: string;
     date?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default async function EventsPage({ searchParams }: EventsPageProps) {
-  const query = searchParams.query || "";
-  const category = searchParams.category || "all";
-  const date = searchParams.date || "upcoming";
-  const page = Number(searchParams.page) || 1;
+  const { query = "", category = "all", date = "upcoming", page = 1 } = await searchParams;
 
-  const events = await getAllEvents({ query, category, date, page, limit: 12 });
+  const events = await getAllEvents({ query, category, date, page: Number(page), limit: 12 });
 
   return (
     <div className="container mx-auto space-y-8 p-4 py-6">

@@ -11,15 +11,26 @@ interface EventCardProps {
 }
 
 export async function EventCard({ event }: EventCardProps) {
+  const isPastEvent = new Date(event.date) < new Date();
+
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-all duration-200 hover:shadow-md">
+    <Card
+      className={`flex h-full flex-col overflow-hidden transition-all duration-200 hover:shadow-md ${isPastEvent ? "opacity-75" : ""}`}
+    >
       <div className="relative aspect-[16/9] w-full overflow-hidden">
         <Link key={event.id} href={`/events/${event.id}`} className="h-full">
+          {isPastEvent && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50">
+              <span className="rotate-[-30deg] rounded-md bg-red-500 px-2 py-1 text-xs font-bold text-white">
+                Past Event
+              </span>
+            </div>
+          )}
           <Image
             src={event.banner}
             alt={event.title}
             fill
-            className="scale-100 object-cover transition-all duration-200 hover:scale-105"
+            className={`scale-100 object-cover transition-all duration-200 ${isPastEvent ? "" : "hover:scale-105"}`}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority
           />
