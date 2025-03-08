@@ -33,9 +33,14 @@ import { getGoogleMapsUrl } from "@/utils/maps";
 export const revalidate = 0;
 
 // Динамічні метадані для сторінки деталей події
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   try {
-    const event = await getEventById(params.id);
+    const { id } = await params;
+    const event = await getEventById(id);
 
     if (!event) {
       return {
@@ -102,16 +107,23 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
       <Card className="overflow-hidden border-none shadow-lg">
         {/* Full-width image at the top */}
         <div className="relative aspect-[21/9] w-full">
+          {!isUpcoming && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50">
+              <span className="text-md rotate-[-30deg] rounded-md bg-red-500 px-3 py-2 font-bold text-white">
+                Past Event
+              </span>
+            </div>
+          )}
           <Image
             src={event.banner}
             alt={event.title}
             fill
-            className="object-cover"
+            className={`object-cover ${!isUpcoming ? "opacity-90" : ""}`}
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
           />
           {/* Overlay for buttons */}
-          <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             <BookmarkButton
               eventId={event.id}
               initialIsBookmarked={isBookmarked}

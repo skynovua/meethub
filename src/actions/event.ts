@@ -98,6 +98,8 @@ export async function getAllEvents({
         gte: start,
         lte: end,
       };
+    } else if (date === "past") {
+      whereClause.date = { lt: now };
     }
 
     const events = await db.event.findMany({
@@ -136,7 +138,14 @@ export async function getAllEvents({
  */
 export async function getPopularEvents(limit = 10): Promise<EventWithDetails[]> {
   try {
+    const now = new Date();
+
     const events = await db.event.findMany({
+      where: {
+        date: {
+          gte: now,
+        },
+      },
       include: {
         user: {
           select: {

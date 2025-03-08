@@ -28,6 +28,7 @@ export const DATE_FILTERS = [
   { value: "today", label: "Today", icon: Calendar },
   { value: "week", label: "This week", icon: CalendarRange },
   { value: "month", label: "This month", icon: CalendarRange },
+  { value: "past", label: "Past", icon: CalendarClock },
 ];
 
 // Map of date filter values to display names
