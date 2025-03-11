@@ -1,14 +1,7 @@
 "use server";
 
 import { EventCategory } from "@prisma/client";
-import {
-  endOfMonth,
-  endOfToday,
-  endOfWeek,
-  startOfMonth,
-  startOfToday,
-  startOfWeek,
-} from "date-fns";
+import { endOfMonth, endOfToday, endOfWeek } from "date-fns";
 
 import { uploadImage } from "@/actions/image";
 import { getUserByEmail } from "@/actions/user";
@@ -78,24 +71,21 @@ export async function getAllEvents({
     if (date === "upcoming") {
       whereClause.date = { gte: now };
     } else if (date === "today") {
-      const start = startOfToday();
       const end = endOfToday();
       whereClause.date = {
-        gte: start,
+        gte: now,
         lte: end,
       };
     } else if (date === "week") {
-      const start = startOfWeek(now, { weekStartsOn: 1 });
       const end = endOfWeek(now, { weekStartsOn: 1 });
       whereClause.date = {
-        gte: start,
+        gte: now,
         lte: end,
       };
     } else if (date === "month") {
-      const start = startOfMonth(now);
       const end = endOfMonth(now);
       whereClause.date = {
-        gte: start,
+        gte: now,
         lte: end,
       };
     } else if (date === "past") {

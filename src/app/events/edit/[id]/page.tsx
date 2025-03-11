@@ -23,7 +23,7 @@ export default async function EditMeetup({ params }: EventPageParams) {
   }
 
   return (
-    <div className="bg-background text-foreground container mx-auto p-4">
+    <div className="container mx-auto p-4">
       <EventForm event={transformEventToFormData(event, id)} />
     </div>
   );
