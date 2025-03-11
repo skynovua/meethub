@@ -2,15 +2,7 @@
 
 import { useCallback, useEffect } from "react";
 
-import {
-  CalendarIcon,
-  HomeIcon,
-  LogOutIcon,
-  Menu,
-  PenIcon,
-  Presentation,
-  User,
-} from "lucide-react";
+import { CalendarIcon, LogOutIcon, Menu, PenIcon, Presentation, User } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -77,13 +69,6 @@ export function Navbar({ session }: NavbarProps) {
               <DropdownMenuLabel>Navigation</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem asChild>
-                  <Link href="/" className="flex w-full cursor-pointer items-center">
-                    <HomeIcon className="mr-2 h-4 w-4" />
-                    <span>Home</span>
-                    {pathname === "/" && <span className="text-primary ml-auto text-xs">•</span>}
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/events" className="flex w-full cursor-pointer items-center">
                     <CalendarIcon className="mr-2 h-4 w-4" />
