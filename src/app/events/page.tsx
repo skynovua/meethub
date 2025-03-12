@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 
 import { getAllEvents } from "@/actions/event";
-import { EventFilters } from "@/components/events/event-filters";
 import { EventGrid } from "@/components/events/event-grid";
 import { EventsSearch } from "@/components/events/events-search";
+import { FiltersContainer } from "@/components/events/filters-container";
 import { SelectedFilters } from "@/components/events/selected-filters";
 import { PageHeading } from "@/components/page-heading";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,7 +31,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[250px_1fr]">
         <div>
-          <EventFilters selectedCategory={category} selectedDate={date} />
+          <FiltersContainer selectedCategory={category} selectedDate={date} />
         </div>
 
         <div className="space-y-6">
