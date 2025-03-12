@@ -14,9 +14,14 @@ import { CATEGORY_DISPLAY_NAMES, DATE_FILTERS } from "@/lib/constants";
 interface EventFiltersProps {
   selectedCategory: string;
   selectedDate: string;
+  className?: string;
 }
 
-export function EventFilters({ selectedCategory, selectedDate }: EventFiltersProps) {
+export function EventFilters({
+  selectedCategory,
+  selectedDate,
+  className = "",
+}: EventFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -57,7 +62,7 @@ export function EventFilters({ selectedCategory, selectedDate }: EventFiltersPro
   };
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
       <Card className={isPending ? "pointer-events-none opacity-70" : ""}>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -124,4 +129,19 @@ export function EventFilters({ selectedCategory, selectedDate }: EventFiltersPro
       </Card>
     </div>
   );
+}
+
+// Helper function to count active filters (export for reuse)
+export function countActiveFilters(category: string, date: string): number {
+  let count = 0;
+
+  if (category && category !== "all") {
+    count += 1;
+  }
+
+  if (date && date !== "upcoming") {
+    count += 1;
+  }
+
+  return count;
 }
