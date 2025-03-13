@@ -41,23 +41,37 @@ export function EventFilters({
     return params.toString();
   };
 
-  const handleCategoryChange = (category: string) => {
+  // const handleCategoryChange = (category: string) => {
+  //   // Update local state immediately for responsive feedback
+  //   setLocalCategory(category);
+
+  //   // Then handle the actual navigation with transition
+  //   startTransition(() => {
+  //     router.push(`/events?${createQueryString("category", category)}`);
+  //   });
+  // };
+
+  // const handleDateChange = (date: string) => {
+  //   // Update local state immediately for responsive feedback
+  //   setLocalDate(date);
+
+  //   // Then handle the actual navigation with transition
+  //   startTransition(() => {
+  //     router.push(`/events?${createQueryString("date", date)}`);
+  //   });
+  // };
+
+  const handleFilterChange = (name: string, value: string) => {
     // Update local state immediately for responsive feedback
-    setLocalCategory(category);
+    if (name === "category") {
+      setLocalCategory(value);
+    } else {
+      setLocalDate(value);
+    }
 
     // Then handle the actual navigation with transition
     startTransition(() => {
-      router.push(`/events?${createQueryString("category", category)}`);
-    });
-  };
-
-  const handleDateChange = (date: string) => {
-    // Update local state immediately for responsive feedback
-    setLocalDate(date);
-
-    // Then handle the actual navigation with transition
-    startTransition(() => {
-      router.push(`/events?${createQueryString("date", date)}`);
+      router.push(`/events?${createQueryString(name, value)}`);
     });
   };
 
@@ -74,7 +88,11 @@ export function EventFilters({
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <RadioGroup value={localCategory} onValueChange={handleCategoryChange} className="gap-2">
+          <RadioGroup
+            value={localCategory}
+            onValueChange={(value) => handleFilterChange("category", value)}
+            className="gap-2"
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="category-all" />
               <Label htmlFor="category-all" className="cursor-pointer">
@@ -111,7 +129,11 @@ export function EventFilters({
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <RadioGroup value={localDate} onValueChange={handleDateChange} className="gap-2">
+          <RadioGroup
+            value={localDate}
+            onValueChange={(value) => handleFilterChange("date", value)}
+            className="gap-2"
+          >
             {DATE_FILTERS.map((item) => (
               <div key={item.value} className="flex items-center space-x-2">
                 <RadioGroupItem value={item.value} id={item.value} />

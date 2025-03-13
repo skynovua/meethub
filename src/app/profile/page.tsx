@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getUserBookmarkedEvents, getUserFavoritedEvents } from "@/actions/event";
@@ -28,22 +29,25 @@ export async function generateMetadata() {
   };
 }
 
-export default async function ProfilePage() {
+export default async function ProfilePage({ searchParams }: { searchParams: { tab?: string } }) {
   const session = await auth();
 
   if (!session?.user?.email) {
-    redirect("/api/auth/signin");
+    redirect("/sign-in");
   }
 
   const user = await getUserByEmail(session.user.email);
 
   if (!user) {
-    redirect("/api/auth/signin");
+    redirect("/sign-in");
   }
 
   // Get user's bookmarked and favorite events
   const bookmarkedEvents = await getUserBookmarkedEvents();
   const favoriteEvents = await getUserFavoritedEvents();
+
+  // Get active tab from searchParams or default to "bookmarks"
+  const activeTab = searchParams.tab === "favorites" ? "favorites" : "bookmarks";
 
   return (
     <div className="container mx-auto p-4">
@@ -63,10 +67,14 @@ export default async function ProfilePage() {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="bookmarks">
+      <Tabs defaultValue={activeTab}>
         <TabsList className="mb-4">
-          <TabsTrigger value="bookmarks">My Bookmarks</TabsTrigger>
-          <TabsTrigger value="favorites">My Favorites</TabsTrigger>
+          <TabsTrigger value="bookmarks" asChild>
+            <Link href="?tab=bookmarks">My Bookmarks</Link>
+          </TabsTrigger>
+          <TabsTrigger value="favorites" asChild>
+            <Link href="?tab=favorites">My Favorites</Link>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookmarks">

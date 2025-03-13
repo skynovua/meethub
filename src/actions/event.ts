@@ -219,6 +219,8 @@ export async function getUserBookmarkedEvents(userId?: string): Promise<EventWit
       userId = user.id;
     }
 
+    const now = new Date();
+
     const events = await db.event.findMany({
       where: {
         bookmarks: {
@@ -226,9 +228,6 @@ export async function getUserBookmarkedEvents(userId?: string): Promise<EventWit
             user_id: userId,
           },
         },
-      },
-      orderBy: {
-        date: "asc",
       },
       include: {
         user: {
@@ -242,11 +241,28 @@ export async function getUserBookmarkedEvents(userId?: string): Promise<EventWit
       },
     });
 
-    return events.map((event) => ({
+    const eventDetails = events.map((event) => ({
       ...event,
       favoriteCount: event.favorites.length,
       bookmarkCount: event.bookmarks.length,
     }));
+
+    // Sort events: upcoming first (sorted by date asc), then past events (sorted by date desc)
+    return eventDetails.sort((a, b) => {
+      const aIsPast = a.date < now;
+      const bIsPast = b.date < now;
+
+      if (aIsPast && !bIsPast) return 1; // a is past, b is upcoming -> b comes first
+      if (!aIsPast && bIsPast) return -1; // a is upcoming, b is past -> a comes first
+
+      if (aIsPast && bIsPast) {
+        // Both past: more recent past events first
+        return b.date.getTime() - a.date.getTime();
+      } else {
+        // Both upcoming: earlier events first
+        return a.date.getTime() - b.date.getTime();
+      }
+    });
   } catch (error) {
     console.error("Error fetching user bookmarked events:", error);
     return [];
@@ -272,6 +288,8 @@ export async function getUserFavoritedEvents(userId?: string): Promise<EventWith
       userId = user.id;
     }
 
+    const now = new Date();
+
     const events = await db.event.findMany({
       where: {
         favorites: {
@@ -279,9 +297,6 @@ export async function getUserFavoritedEvents(userId?: string): Promise<EventWith
             user_id: userId,
           },
         },
-      },
-      orderBy: {
-        date: "asc",
       },
       include: {
         user: {
@@ -295,11 +310,28 @@ export async function getUserFavoritedEvents(userId?: string): Promise<EventWith
       },
     });
 
-    return events.map((event) => ({
+    const eventDetails = events.map((event) => ({
       ...event,
       favoriteCount: event.favorites.length,
       bookmarkCount: event.bookmarks.length,
     }));
+
+    // Sort events: upcoming first (sorted by date asc), then past events (sorted by date desc)
+    return eventDetails.sort((a, b) => {
+      const aIsPast = a.date < now;
+      const bIsPast = b.date < now;
+
+      if (aIsPast && !bIsPast) return 1; // a is past, b is upcoming -> b comes first
+      if (!aIsPast && bIsPast) return -1; // a is upcoming, b is past -> a comes first
+
+      if (aIsPast && bIsPast) {
+        // Both past: more recent past events first
+        return b.date.getTime() - a.date.getTime();
+      } else {
+        // Both upcoming: earlier events first
+        return a.date.getTime() - b.date.getTime();
+      }
+    });
   } catch (error) {
     console.error("Error fetching user favorited events:", error);
     return [];
