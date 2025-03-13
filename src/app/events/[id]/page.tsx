@@ -106,7 +106,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
 
       <Card className="overflow-hidden border-none shadow-lg">
         {/* Full-width image at the top */}
-        <div className="relative aspect-[21/9] w-full">
+        <div className="relative aspect-[16/9] w-full">
           {!isUpcoming && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50">
               <span className="text-md rounded-md bg-red-500 px-3 py-2 font-bold text-white">
