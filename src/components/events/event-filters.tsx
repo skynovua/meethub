@@ -41,35 +41,13 @@ export function EventFilters({
     return params.toString();
   };
 
-  // const handleCategoryChange = (category: string) => {
-  //   // Update local state immediately for responsive feedback
-  //   setLocalCategory(category);
-
-  //   // Then handle the actual navigation with transition
-  //   startTransition(() => {
-  //     router.push(`/events?${createQueryString("category", category)}`);
-  //   });
-  // };
-
-  // const handleDateChange = (date: string) => {
-  //   // Update local state immediately for responsive feedback
-  //   setLocalDate(date);
-
-  //   // Then handle the actual navigation with transition
-  //   startTransition(() => {
-  //     router.push(`/events?${createQueryString("date", date)}`);
-  //   });
-  // };
-
   const handleFilterChange = (name: string, value: string) => {
-    // Update local state immediately for responsive feedback
     if (name === "category") {
       setLocalCategory(value);
     } else {
       setLocalDate(value);
     }
 
-    // Then handle the actual navigation with transition
     startTransition(() => {
       router.push(`/events?${createQueryString(name, value)}`);
     });
@@ -151,19 +129,4 @@ export function EventFilters({
       </Card>
     </div>
   );
-}
-
-// Helper function to count active filters (export for reuse)
-export function countActiveFilters(category: string, date: string): number {
-  let count = 0;
-
-  if (category && category !== "all") {
-    count += 1;
-  }
-
-  if (date && date !== "upcoming") {
-    count += 1;
-  }
-
-  return count;
 }

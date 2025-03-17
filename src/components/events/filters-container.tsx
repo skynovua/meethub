@@ -1,7 +1,22 @@
 "use client";
 
-import { EventFilters, countActiveFilters } from "./event-filters";
+import { EventFilters } from "./event-filters";
 import { MobileFilters } from "./mobile-filters";
+
+// Helper function to count active filters (export for reuse)
+export function countActiveFilters(category: string, date: string): number {
+  let count = 0;
+
+  if (category && category !== "all") {
+    count += 1;
+  }
+
+  if (date && date !== "upcoming") {
+    count += 1;
+  }
+
+  return count;
+}
 
 interface FiltersContainerProps {
   selectedCategory: string;
