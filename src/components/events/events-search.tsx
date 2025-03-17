@@ -37,7 +37,6 @@ export function EventsSearch({ defaultValue = "" }: EventsSearchProps) {
   const handleClear = () => {
     setQuery("");
 
-    // Також виконуємо пошук з очищеним полем, якщо до цього був запит
     if (defaultValue) {
       startTransition(() => {
         const params = new URLSearchParams(searchParams?.toString());

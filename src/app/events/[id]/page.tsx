@@ -32,7 +32,6 @@ import { getGoogleMapsUrl } from "@/utils/maps";
 
 export const revalidate = 0;
 
-// Динамічні метадані для сторінки деталей події
 export async function generateMetadata({
   params,
 }: {
@@ -50,7 +49,6 @@ export async function generateMetadata({
     }
 
     const organizer = await getUserById(event.user_id);
-    const eventDate = new Date(event.date);
 
     return {
       title: `${event.title} | MeetHub`,

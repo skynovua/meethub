@@ -7,7 +7,6 @@ import { getUserByEmail } from "@/actions/user";
 import { auth } from "@/core/auth";
 import { db } from "@/core/prisma";
 
-// Додати подію до вподобань
 export const addToFavorites = async (eventId: string) => {
   try {
     const session = await auth();
@@ -22,7 +21,6 @@ export const addToFavorites = async (eventId: string) => {
       throw new Error("User not found");
     }
 
-    // Перевіряємо, чи вже є вподобання
     const existingFavorite = await db.favorite.findUnique({
       where: {
         user_id_event_id: {
@@ -36,7 +34,6 @@ export const addToFavorites = async (eventId: string) => {
       return { message: "Already in favorites" };
     }
 
-    // Додаємо подію до вподобань
     await db.favorite.create({
       data: {
         user_id: user.id,
@@ -59,7 +56,6 @@ export const addToFavorites = async (eventId: string) => {
   }
 };
 
-// Видалити подію з вподобань
 export const removeFromFavorites = async (eventId: string) => {
   try {
     const session = await auth();
@@ -98,7 +94,6 @@ export const removeFromFavorites = async (eventId: string) => {
   }
 };
 
-// Додати подію до закладок
 export const addToBookmarks = async (eventId: string) => {
   try {
     const session = await auth();
@@ -113,7 +108,6 @@ export const addToBookmarks = async (eventId: string) => {
       throw new Error("User not found");
     }
 
-    // Перевіряємо, чи вже є в закладках
     const existingBookmark = await db.bookmark.findUnique({
       where: {
         user_id_event_id: {
@@ -127,7 +121,6 @@ export const addToBookmarks = async (eventId: string) => {
       return { message: "Already bookmarked" };
     }
 
-    // Додаємо подію до закладок
     await db.bookmark.create({
       data: {
         user_id: user.id,
@@ -149,7 +142,6 @@ export const addToBookmarks = async (eventId: string) => {
   }
 };
 
-// Видалити подію із закладок
 export const removeFromBookmarks = async (eventId: string) => {
   try {
     const session = await auth();
@@ -187,7 +179,6 @@ export const removeFromBookmarks = async (eventId: string) => {
   }
 };
 
-// Перевірити, чи подія у вподобаннях
 export const isEventFavorite = async (eventId: string) => {
   try {
     const session = await auth();
@@ -218,7 +209,6 @@ export const isEventFavorite = async (eventId: string) => {
   }
 };
 
-// Перевірити, чи подія в закладках
 export const isEventBookmarked = async (eventId: string) => {
   try {
     const session = await auth();
