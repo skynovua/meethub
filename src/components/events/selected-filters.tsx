@@ -26,11 +26,8 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
 
   const hasFilters = !!(query || (category && category !== "all") || (date && date !== "upcoming"));
 
-  // Додаємо ефект для очищення стану removingFilter після завершення переходу
   useEffect(() => {
     if (!isPending && removingFilter) {
-      // Якщо перехід завершено, але видалений фільтр все ще відображається
-      // Встановлюємо таймаут для очищення стану
       const id = setTimeout(() => {
         setRemovingFilter(null);
       }, 100);
@@ -44,7 +41,6 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
     }
   }, [isPending, removingFilter]);
 
-  // Безпечне очищення таймера при розмонтуванні компонента
   useEffect(() => {
     return () => {
       if (timeoutId) {
@@ -57,7 +53,6 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
 
   const createFilterRemover = (key: string) => {
     return () => {
-      // Перевіряємо чи не виконується вже якийсь перехід
       if (isPending) return;
 
       setRemovingFilter(key);
@@ -69,7 +64,6 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
           router.push(`/events?${params.toString()}`);
         } catch (error) {
           console.error("Error during navigation:", error);
-          // Скидаємо стан при помилці
           setRemovingFilter(null);
         }
       });
@@ -77,7 +71,6 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
   };
 
   const resetAllFilters = () => {
-    // Перевіряємо чи не виконується вже якийсь перехід
     if (isPending) return;
 
     setRemovingFilter("all");
@@ -87,13 +80,11 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
         router.push("/events");
       } catch (error) {
         console.error("Error during navigation:", error);
-        // Скидаємо стан при помилці
         setRemovingFilter(null);
       }
     });
   };
 
-  // Решта коду залишається без змін
   return (
     <div className="flex flex-wrap items-center gap-2">
       <div className="text-muted-foreground mr-1 text-sm">Filters:</div>
@@ -123,10 +114,6 @@ export function SelectedFilters({ query, category, date }: SelectedFiltersProps)
           </Button>
         </Badge>
       )}
-
-      {/* Решта компонента залишається без змін */}
-
-      {/* Інші бейджі фільтрів... */}
 
       {category && category !== "all" && (
         <Badge
