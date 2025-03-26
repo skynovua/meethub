@@ -64,7 +64,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
               src={event.banner}
               alt={event.title}
               fill
-              className={`scale-100 object-cover transition-all duration-200`}
+              className={"scale-100 object-cover transition-all duration-200"}
               sizes="(max-width: 768px) 100%, 33vw"
             />
           </div>
