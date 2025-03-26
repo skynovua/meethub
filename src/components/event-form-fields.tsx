@@ -9,8 +9,16 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { EVENT_CATEGORIES } from "@/lib/constants";
 import { toBase64 } from "@/utils/file";
 
 export function EventFormFields() {
@@ -84,6 +92,30 @@ export function EventFormFields() {
             <FormControl>
               <Input type="datetime-local" {...field} />
             </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="category"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Category</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="mb-0">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent className="h-48">
+                {EVENT_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category.charAt(0) + category.slice(1).toLowerCase().replace("_", " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
