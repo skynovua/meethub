@@ -34,7 +34,7 @@ export default async function TicketSuccessPage({
             </div>
             <CardTitle className="text-2xl">Payment Successful!</CardTitle>
             <CardDescription>
-              Your ticket purchase for "{ticket.event.title}" has been confirmed.
+              Your ticket purchase for &quot;{ticket.event.title}&quot; has been confirmed.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -79,7 +79,7 @@ export default async function TicketSuccessPage({
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Payment Verification Error</CardTitle>
             <CardDescription>
-              We couldn't verify your payment. If you believe this is an error, please contact
+              We couldn&apos;t verify your payment. If you believe this is an error, please contact
               support.
             </CardDescription>
           </CardHeader>
