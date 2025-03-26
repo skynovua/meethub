@@ -11,5 +11,5 @@ export async function DateTimeDisplay({ date, className }: DateTimeDisplayProps)
   const acceptLanguage = await headers();
   const locale = acceptLanguage.get("accept-language")?.split(",")[0] || "en-US";
 
-  return <div className={className}>{formatDateWithWeekday(date, locale)}</div>;
+  return <div className={className}>{formatDateWithWeekday(date, "en-EU")}</div>;
 }

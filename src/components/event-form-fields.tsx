@@ -174,7 +174,7 @@ export function EventFormFields() {
                 <FormLabel>Ticket Price</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <span className="text-muted-foreground absolute top-2.5 left-3">$</span>
+                    <span className="text-muted-foreground absolute top-2 left-3 text-sm">$</span>
                     <Input
                       type="number"
                       className="pl-8"
