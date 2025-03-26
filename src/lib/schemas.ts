@@ -30,6 +30,17 @@ export const EventFormSchema = z.object({
   address: z.string().min(1, "Location is required"),
   banner: z.string().min(1, "Banner is required"),
   category: z.nativeEnum(EventCategory),
+  // Нові поля для квитків
+  has_tickets: z.boolean().default(false),
+  price: z.number().nullable().optional(),
 });
 
 export type EventFormData = z.infer<typeof EventFormSchema>;
+
+// Схема для створення запиту на купівлю квитка
+export const TicketPurchaseSchema = z.object({
+  eventId: z.string().min(1, "Event ID is required"),
+  quantity: z.number().int().positive().default(1),
+});
+
+export type TicketPurchaseData = z.infer<typeof TicketPurchaseSchema>;

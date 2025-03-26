@@ -2,8 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getUserBookmarkedEvents, getUserFavoritedEvents } from "@/actions/event";
+import { getUserTickets } from "@/actions/ticket";
 import { getUserByEmail } from "@/actions/user";
 import { EventCard } from "@/components/event-card";
+import { TicketCard } from "@/components/ticket-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { auth } from "@/core/auth";
@@ -29,7 +31,11 @@ export async function generateMetadata() {
   };
 }
 
-export default async function ProfilePage({ searchParams }: { searchParams: { tab?: string } }) {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
   const session = await auth();
 
   if (!session?.user?.email) {
@@ -46,8 +52,15 @@ export default async function ProfilePage({ searchParams }: { searchParams: { ta
   const bookmarkedEvents = await getUserBookmarkedEvents();
   const favoriteEvents = await getUserFavoritedEvents();
 
+  // Додано отримання квитків користувача
+  const userTickets = await getUserTickets();
+
+  // Await searchParams before accessing its properties
+  const params = await searchParams;
+
   // Get active tab from searchParams or default to "bookmarks"
-  const activeTab = searchParams.tab === "favorites" ? "favorites" : "bookmarks";
+  const activeTab =
+    params.tab === "favorites" ? "favorites" : params.tab === "tickets" ? "tickets" : "bookmarks";
 
   return (
     <div className="container mx-auto p-4">
@@ -75,6 +88,9 @@ export default async function ProfilePage({ searchParams }: { searchParams: { ta
           <TabsTrigger value="favorites" asChild>
             <Link href="?tab=favorites">My Favorites</Link>
           </TabsTrigger>
+          <TabsTrigger value="tickets" asChild>
+            <Link href="?tab=tickets">My Tickets</Link>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookmarks">
@@ -98,6 +114,19 @@ export default async function ProfilePage({ searchParams }: { searchParams: { ta
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {favoriteEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="tickets">
+          <h2 className="mb-4 text-xl font-semibold">My Tickets</h2>
+          {userTickets.length === 0 ? (
+            <p className="text-muted-foreground">You haven`t purchased any tickets yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
+              {userTickets.map((ticket) => (
+                <TicketCard key={ticket.id} ticket={ticket} />
               ))}
             </div>
           )}

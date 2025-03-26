@@ -24,6 +24,8 @@ model User {
   events        Event[]
   favorites     Favorite[]
   bookmarks     Bookmark[]
+  tickets       Ticket[] // Додано зв'язок з квитками
+  payments      Payment[] // Додано зв'язок з платежами
 }
 
 model Account {
@@ -71,9 +73,14 @@ model Event {
   user_id     String
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt
-  user        User          @relation(fields: [user_id], references: [id])
-  favorites   Favorite[]
-  bookmarks   Bookmark[]
+  // Додані поля для тикетів
+  has_tickets Boolean       @default(false)
+  price       Float? // Ціна квитка, якщо є платні квитки
+
+  user      User       @relation(fields: [user_id], references: [id])
+  favorites Favorite[]
+  bookmarks Bookmark[]
+  tickets   Ticket[] // Додано зв'язок з квитками
 }
 
 model Favorite {
@@ -96,4 +103,49 @@ model Bookmark {
   event      Event    @relation(fields: [event_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, event_id])
+}
+
+// Нова модель для квитків
+enum TicketStatus {
+  PENDING // Очікує оплати
+  PAID // Оплачено
+  CANCELLED // Скасовано
+}
+
+model Ticket {
+  id         String       @id @default(cuid())
+  event_id   String
+  user_id    String
+  quantity   Int          @default(1)
+  status     TicketStatus @default(PENDING)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+
+  event   Event    @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  payment Payment? // Зв'язок з платежем
+}
+
+// Нова модель для платежів
+enum PaymentStatus {
+  PENDING // Очікує обробки
+  COMPLETED // Завершено
+  FAILED // Помилка
+  REFUNDED // Повернуто
+}
+
+model Payment {
+  id                 String        @id @default(cuid())
+  user_id            String
+  ticket_id          String        @unique // Унікальний, оскільки один квиток - один платіж
+  amount             Float
+  currency           String        @default("USD")
+  stripe_payment_id  String? // ID платежу в системі Stripe
+  stripe_checkout_id String? // ID сесії чекауту в системі Stripe
+  status             PaymentStatus @default(PENDING)
+  created_at         DateTime      @default(now())
+  updated_at         DateTime      @updatedAt
+
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  ticket Ticket @relation(fields: [ticket_id], references: [id], onDelete: Cascade)
 }
