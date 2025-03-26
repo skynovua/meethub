@@ -3,18 +3,20 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { UploadIcon, XIcon } from "lucide-react";
+import { Ticket, UploadIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toBase64 } from "@/utils/file";
 
 export function EventFormFields() {
   const { control, watch, setValue } = useFormContext();
   const previewImage = watch("banner");
+  const hasTickets = watch("has_tickets");
   const [isUploading, setIsUploading] = useState(false);
 
   const handleRemoveImage = () => {
@@ -99,6 +101,70 @@ export function EventFormFields() {
           </FormItem>
         )}
       />
+
+      {/* Нові поля для квитків */}
+      <div className="space-y-4 rounded-md border p-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <h3 className="font-medium">Ticket Sales</h3>
+            <p className="text-muted-foreground text-sm">Enable ticket sales for this event</p>
+          </div>
+          <FormField
+            control={control}
+            name="has_tickets"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="flex items-center">
+                    <Ticket className="text-muted-foreground mr-2 h-4 w-4" />
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        if (!checked) {
+                          setValue("price", null);
+                        }
+                      }}
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {hasTickets && (
+          <FormField
+            control={control}
+            name="price"
+            render={({ field: { value, onChange, ...rest } }) => (
+              <FormItem>
+                <FormLabel>Ticket Price</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <span className="text-muted-foreground absolute top-2.5 left-3">$</span>
+                    <Input
+                      type="number"
+                      className="pl-8"
+                      placeholder="0.00"
+                      value={value || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        onChange(value ? parseFloat(value) : null);
+                      }}
+                      min={0}
+                      step={0.01}
+                      {...rest}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+      </div>
+
       <FormField
         control={control}
         name="banner"
@@ -153,7 +219,6 @@ export function EventFormFields() {
                     </div>
                   )}
                 </div>
-
                 {/* Прихований інпут для вибору файлу */}
                 <Input
                   id="file-upload"

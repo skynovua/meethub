@@ -25,6 +25,8 @@ interface CreateEventData {
   address: string;
   banner: string;
   category?: EventCategory;
+  has_tickets?: boolean; // Додано поле для наявності квитків
+  price?: number | null; // Додано поле для ціни квитків
 }
 
 /**
@@ -411,6 +413,9 @@ export async function createEvent(data: CreateEventData) {
         banner: bannerUrl,
         category: data.category,
         user_id: user.id,
+        // Додані поля для квитків
+        has_tickets: data.has_tickets || false,
+        price: data.price || null,
       },
     });
 
@@ -450,6 +455,9 @@ export async function updateEvent(id: string, data: CreateEventData) {
         address: data.address,
         banner: bannerUrl,
         category: data.category,
+        // Додані поля для квитків
+        has_tickets: data.has_tickets || false,
+        price: data.price || null,
       },
     });
 
