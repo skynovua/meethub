@@ -1,8 +1,18 @@
+import { Metadata } from "next";
+
 import { getAllEvents, getPopularEvents } from "@/actions/event";
 import { EventCard } from "@/components/event-card";
 import { SortSelect } from "@/components/sort-select";
 
-export const revalidate = 600;
+// Додаємо конфігурацію динамічного оновлення статичної сторінки
+export const revalidate = 3600; // оновлення кожну годину
+
+// Додаємо генерування метаданих
+export const metadata: Metadata = {
+  title: "MeetHub | Discover and Join Exciting Events",
+  description:
+    "Find and join events that match your interests, connect with like-minded people, and create unforgettable experiences.",
+};
 
 export default async function Dashboard({
   searchParams,

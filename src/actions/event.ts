@@ -2,6 +2,9 @@
 
 import { EventCategory } from "@prisma/client";
 import { endOfMonth, endOfToday, endOfWeek } from "date-fns";
+import { unstable_cache } from "next/cache";
+
+// Імпортуємо функцію кешування
 
 import { uploadImage } from "@/actions/image";
 import { getUserByEmail } from "@/actions/user";
@@ -29,178 +32,189 @@ interface CreateEventData {
   price?: number | null; // Додано поле для ціни квитків
 }
 
+// Функція для трансформації результатів запиту
+const transformEventDetails = (events: any[]): EventWithDetails[] => {
+  return events.map((event) => ({
+    ...event,
+    favoriteCount: event.favorites.length,
+    bookmarkCount: event.bookmarks.length,
+  }));
+};
+
 /**
- * Fetches events with filtering and pagination
+ * Fetches events with filtering and pagination - з кешуванням для підвищення продуктивності
  */
-export async function getAllEvents({
-  query = "",
-  category = "all",
-  date = "upcoming",
-  page = 1,
-  limit = 12,
-}: GetAllEventsOptions): Promise<EventWithDetails[]> {
-  try {
-    const skip = (page - 1) * limit;
+export const getAllEvents = unstable_cache(
+  async ({
+    query = "",
+    category = "all",
+    date = "upcoming",
+    page = 1,
+    limit = 12,
+  }: GetAllEventsOptions): Promise<EventWithDetails[]> => {
+    try {
+      const skip = (page - 1) * limit;
+      // Build the where clause based on filters
+      const whereClause: any = {};
 
-    // Build the where clause based on filters
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let whereClause: any = {};
-
-    // Search filter
-    if (query) {
-      whereClause = {
-        ...whereClause,
-        OR: [
+      // Search filter
+      if (query) {
+        whereClause.OR = [
           { title: { contains: query, mode: "insensitive" } },
           { description: { contains: query, mode: "insensitive" } },
-        ],
-      };
-    }
-
-    // Category filter
-    if (category && category !== "all") {
-      // Convert string category to enum value
-      const categoryEnum = category.toUpperCase() as EventCategory;
-      // Only add if it's a valid enum value
-      if (Object.values(EventCategory).includes(categoryEnum)) {
-        whereClause.category = categoryEnum;
+        ];
       }
-    }
 
-    // Date filter
-    const now = new Date();
+      // Category filter
+      if (category && category !== "all") {
+        // Convert string category to enum value
+        const categoryEnum = category.toUpperCase() as EventCategory;
+        // Only add if it's a valid enum value
+        if (Object.values(EventCategory).includes(categoryEnum)) {
+          whereClause.category = categoryEnum;
+        }
+      }
 
-    if (date === "upcoming") {
-      whereClause.date = { gte: now };
-    } else if (date === "today") {
-      const end = endOfToday();
-      whereClause.date = {
-        gte: now,
-        lte: end,
-      };
-    } else if (date === "week") {
-      const end = endOfWeek(now, { weekStartsOn: 1 });
-      whereClause.date = {
-        gte: now,
-        lte: end,
-      };
-    } else if (date === "month") {
-      const end = endOfMonth(now);
-      whereClause.date = {
-        gte: now,
-        lte: end,
-      };
-    } else if (date === "past") {
-      whereClause.date = { lt: now };
-    }
-
-    const events = await db.event.findMany({
-      where: whereClause,
-      orderBy: {
-        date: "asc",
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        favorites: true,
-        bookmarks: true,
-      },
-      skip,
-      take: limit,
-    });
-
-    // Transform to include counts
-    return events.map((event) => ({
-      ...event,
-      favoriteCount: event.favorites.length,
-      bookmarkCount: event.bookmarks.length,
-    }));
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return [];
-  }
-}
-
-/**
- * Fetches events sorted by popularity (most favorited first)
- */
-export async function getPopularEvents(limit = 10): Promise<EventWithDetails[]> {
-  try {
-    const now = new Date();
-
-    const events = await db.event.findMany({
-      where: {
-        date: {
+      // Date filter
+      const now = new Date();
+      if (date === "upcoming") {
+        whereClause.date = { gte: now };
+      } else if (date === "today") {
+        const end = endOfToday();
+        whereClause.date = {
           gte: now,
+          lte: end,
+        };
+      } else if (date === "week") {
+        const end = endOfWeek(now, { weekStartsOn: 1 });
+        whereClause.date = {
+          gte: now,
+          lte: end,
+        };
+      } else if (date === "month") {
+        const end = endOfMonth(now);
+        whereClause.date = {
+          gte: now,
+          lte: end,
+        };
+      } else if (date === "past") {
+        whereClause.date = { lt: now };
+      }
+
+      // Оптимізований запит: обмежуємо вибрані поля для покращення продуктивності
+      const events = await db.event.findMany({
+        where: whereClause,
+        orderBy: {
+          date: "asc",
         },
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            image: true,
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favorites: {
+            select: {
+              user_id: true,
+            },
+          },
+          bookmarks: {
+            select: {
+              user_id: true,
+            },
           },
         },
-        favorites: true,
-        bookmarks: true,
-      },
-      orderBy: {
-        favorites: {
-          _count: "desc",
-        },
-      },
-      take: limit,
-    });
+        skip,
+        take: limit,
+      });
 
-    return events.map((event) => ({
-      ...event,
-      favoriteCount: event.favorites.length,
-      bookmarkCount: event.bookmarks.length,
-    }));
-  } catch (error) {
-    console.error("Error fetching popular events:", error);
-    return [];
-  }
-}
+      // Transform to include counts
+      return transformEventDetails(events);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      return [];
+    }
+  },
+  ["events-list"], // Ключ для кешування
+  { revalidate: 300 }, // Оновлювати кеш кожні 5 хвилин
+);
 
 /**
- * Fetches events created by a specific user
+ * Fetches events sorted by popularity (most favorited first) - з кешуванням
  */
-export async function getUserCreatedEvents(userId: string): Promise<EventWithDetails[]> {
-  try {
-    const events = await db.event.findMany({
-      where: {
-        user_id: userId,
-      },
-      orderBy: {
-        date: "asc",
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            image: true,
+export const getPopularEvents = unstable_cache(
+  async (limit = 10): Promise<EventWithDetails[]> => {
+    try {
+      const now = new Date();
+      const events = await db.event.findMany({
+        where: {
+          date: {
+            gte: now,
           },
         },
-        favorites: true,
-        bookmarks: true,
-      },
-    });
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favorites: true,
+          bookmarks: true,
+        },
+        orderBy: {
+          favorites: {
+            _count: "desc",
+          },
+        },
+        take: limit,
+      });
 
-    return events.map((event) => ({
-      ...event,
-      favoriteCount: event.favorites.length,
-      bookmarkCount: event.bookmarks.length,
-    }));
-  } catch (error) {
-    console.error("Error fetching user created events:", error);
-    return [];
-  }
-}
+      return transformEventDetails(events);
+    } catch (error) {
+      console.error("Error fetching popular events:", error);
+      return [];
+    }
+  },
+  ["popular-events"],
+  { revalidate: 600 }, // Оновлювати кеш кожні 10 хвилин
+);
+
+/**
+ * Fetches events created by a specific user - з кешуванням
+ */
+export const getUserCreatedEvents = unstable_cache(
+  async (userId: string): Promise<EventWithDetails[]> => {
+    try {
+      const events = await db.event.findMany({
+        where: {
+          user_id: userId,
+        },
+        orderBy: {
+          date: "asc",
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favorites: true,
+          bookmarks: true,
+        },
+      });
+
+      return transformEventDetails(events);
+    } catch (error) {
+      console.error("Error fetching user created events:", error);
+      return [];
+    }
+  },
+  ["user-events"],
+  { revalidate: 300 },
+);
 
 /**
  * Fetches events a user has bookmarked
@@ -341,44 +355,46 @@ export async function getUserFavoritedEvents(userId?: string): Promise<EventWith
 }
 
 /**
- * Get a single event by id
+ * Get a single event by id - з кешуванням
  */
-export async function getEventById(id: string) {
-  try {
-    const event = await db.event.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            image: true,
-          },
+export const getEventById = unstable_cache(
+  async (id: string) => {
+    try {
+      const event = await db.event.findUnique({
+        where: {
+          id,
         },
-        favorites: true,
-        bookmarks: true,
-      },
-    });
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favorites: true,
+          bookmarks: true,
+        },
+      });
 
-    if (!event) {
+      if (!event) {
+        return null;
+      }
+
+      return {
+        ...event,
+        favoriteCount: event.favorites.length,
+        bookmarkCount: event.bookmarks.length,
+      };
+    } catch (error) {
+      console.error("Error fetching event:", error);
       return null;
     }
+  },
+  ["event-detail"],
+  { revalidate: 60 }, // Оновлювати кеш кожну хвилину для деталей події
+);
 
-    return {
-      ...event,
-      favoriteCount: event.favorites.length,
-      bookmarkCount: event.bookmarks.length,
-    };
-  } catch (error) {
-    console.error("Error fetching event:", error);
-    return null;
-  }
-}
-
-/**
- * Create a new event
- */
+// Залишаємо функції які модифікують дані без кешування
 export async function createEvent(data: CreateEventData) {
   const session = await auth();
 
@@ -426,9 +442,6 @@ export async function createEvent(data: CreateEventData) {
   }
 }
 
-/**
- * Update an existing event
- */
 export async function updateEvent(id: string, data: CreateEventData) {
   // Verify event ownership can be added here for security
 
@@ -468,9 +481,6 @@ export async function updateEvent(id: string, data: CreateEventData) {
   }
 }
 
-/**
- * Delete an event
- */
 export async function deleteEvent(id: string) {
   // Verify event ownership can be added here for security
 

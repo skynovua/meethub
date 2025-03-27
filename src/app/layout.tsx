@@ -11,7 +11,14 @@ import { auth } from "@/core/auth";
 
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap", // Це запобігає миготінню невидимого тексту (FOUT)
+  preload: true,
+  // Завантажуємо лише необхідні варіанти шрифту
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "MeetHub | Discover and Join Exciting Events",
@@ -31,12 +38,21 @@ export const metadata: Metadata = {
     canonical: process.env.NEXT_PUBLIC_APP_URL,
   },
 };
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
   return (
     <SessionProvider session={session}>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <link
+            rel="preconnect"
+            href="https://vzxrjboeyxynrpwgqtfn.supabase.co"
+            crossOrigin="anonymous"
+          />
+          {/* Додаємо preconnect для основних доменів */}
+        </head>
         <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="bg-background text-foreground min-h-screen">
