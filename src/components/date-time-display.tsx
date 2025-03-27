@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+"use client";
 
 import { formatDateWithWeekday } from "@/utils/date";
 
@@ -7,9 +7,8 @@ interface DateTimeDisplayProps {
   className?: string;
 }
 
-export async function DateTimeDisplay({ date, className }: DateTimeDisplayProps) {
-  const acceptLanguage = await headers();
-  const locale = acceptLanguage.get("accept-language")?.split(",")[0] || "en-US";
+export function DateTimeDisplay({ date, className }: DateTimeDisplayProps) {
+  console.log("date", date);
 
   return <div className={className}>{formatDateWithWeekday(date, "en-EU")}</div>;
 }

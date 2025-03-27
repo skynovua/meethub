@@ -22,8 +22,12 @@ export function EventGrid({ events, hasFilters }: EventGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-      {events.map((event) => (
-        <EventCard event={event} key={event.id} />
+      {events.map((event, index) => (
+        <EventCard
+          event={event}
+          key={event.id}
+          isPriority={index < 3} // тільки перші 3 події матимуть пріоритет
+        />
       ))}
     </div>
   );
