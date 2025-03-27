@@ -16,14 +16,10 @@ const nextConfig: NextConfig = {
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 60,
   },
-  // Оптимізація для швидшого завантаження
-  swcMinify: true,
   poweredByHeader: false,
-  // Оптимізація статичних ресурсів
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
-  // Оптимізація HTTP заголовків
   headers: async () => [
     {
       source: "/(.*)",
