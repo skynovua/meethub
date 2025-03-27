@@ -8,7 +8,5 @@ interface DateTimeDisplayProps {
 }
 
 export function DateTimeDisplay({ date, className }: DateTimeDisplayProps) {
-  console.log("date", date);
-
   return <div className={className}>{formatDateWithWeekday(date, "en-EU")}</div>;
 }
