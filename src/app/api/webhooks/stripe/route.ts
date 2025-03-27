@@ -24,8 +24,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
     }
 
-    console.log("event", event);
-
     // Обробка різних типів подій від Stripe
     switch (event.type) {
       case "checkout.session.completed": {
