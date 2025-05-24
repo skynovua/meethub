@@ -1,0 +1,11 @@
+# .gitattributes для MeetHub
+
+# Позначаємо файли інструкцій як документацію
+docs/code-generation-instructions.md linguist-documentation
+docs/commit-message-guidelines.md linguist-documentation
+.github/copilot-instructions.md linguist-documentation
+
+# Позначаємо файли інструкцій для Copilot
+.github/copilot-instructions.md linguist-language=Markdown
+docs/code-generation-instructions.md linguist-language=Markdown
+docs/commit-message-guidelines.md linguist-language=Markdown
